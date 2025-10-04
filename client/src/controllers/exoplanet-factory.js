@@ -248,8 +248,7 @@ function createPlanets(scene, planetData = null) {
   return planets;
 }
 
-function enablePlanetInteractions(planets, camera, spaceship, planetTutor) {
-  console.log("enablePlanetInteractions called with tutor:", planetTutor);
+function enablePlanetInteractions(planets, camera, spaceship) {
   const raycaster = new THREE.Raycaster();
   const mouse = new THREE.Vector2();
   let hoveredPlanet = null;
@@ -305,12 +304,12 @@ function enablePlanetInteractions(planets, camera, spaceship, planetTutor) {
       if (forwardIntersects.length === 0) return;
 
       const targetPlanet = forwardIntersects[0].object;
-      handlePlanetInteraction(targetPlanet, spaceship, planetTutor);
+      handlePlanetInteraction(targetPlanet, spaceship);
       return;
     }
 
     const clickedPlanet = intersects[0].object;
-    handlePlanetInteraction(clickedPlanet, spaceship, planetTutor);
+    handlePlanetInteraction(clickedPlanet, spaceship);
   });
 
   // Keyboard shortcuts
@@ -318,7 +317,7 @@ function enablePlanetInteractions(planets, camera, spaceship, planetTutor) {
     if (event.key.toLowerCase() === 't') {
       const nearestPlanet = findNearestPlanet(planets, spaceship.position);
       if (nearestPlanet) {
-        handlePlanetInteraction(nearestPlanet, spaceship, planetTutor);
+        handlePlanetInteraction(nearestPlanet, spaceship);
       }
     }
 
@@ -330,30 +329,26 @@ function enablePlanetInteractions(planets, camera, spaceship, planetTutor) {
       }
     }
   });
+
+  document.getElementById("toggle-info").addEventListener("click", () => {
+  const nearestPlanet = findNearestPlanet(planets, spaceship.position);
+  if (nearestPlanet) {
+    playFuturisticScanSound();
+    show3DPlanetInfo(nearestPlanet);
+  }
+  });
+
+  document.getElementById("toggle-targets").addEventListener("click", () => {
+  const nearestPlanet = findNearestPlanet(planets, spaceship.position);
+  if (nearestPlanet) handlePlanetInteraction(nearestPlanet, spaceship);
+  });
 }
 
-function handlePlanetInteraction(planet, spaceship, planetTutor) {
+function handlePlanetInteraction(planet, spaceship) {
   console.log("Interacting with planet:", planet.userData.name);
-  console.log("Planet Tutor instance:", planetTutor);
-  console.log(
-    "Is tutor showing?",
-    planetTutor ? planetTutor.isShowing() : "tutor is null"
-  );
+
   playFuturisticScanSound();
   landOnPlanet(spaceship, planet);
-
-  // Show the tutor with planet information
-  if (planetTutor) {
-    console.log("Attempting to show tutor...");
-    if (!planetTutor.isShowing()) {
-      console.log("Showing tutor with planet data:", planet.userData);
-      planetTutor.show(planet.userData);
-    } else {
-      console.log("Tutor is already showing, skipping");
-    }
-  } else {
-    console.error("Planet Tutor is null or undefined!");
-  }
 
   setTimeout(() => {
     show3DPlanetInfo(planet);

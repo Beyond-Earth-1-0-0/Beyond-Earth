@@ -17,6 +17,7 @@ section {
   border: 1px solid rgba(255, 255, 255, 0.2);
   box-shadow: 0 0 30px rgba(0, 0, 0, 0.8);
   width: 400px;
+  max-width:90%;
   transition: all 0.3s ease;
   font-size: 22px;
   color: white;
@@ -54,7 +55,7 @@ section {
 }
 
 #toggleBtn {
-  background: #238636;
+  background: #dc3545;
   border: none;
   color: white;
   padding: 6px 12px;
@@ -65,9 +66,48 @@ section {
 }
 
 #toggleBtn.off {
-  background: #dc3545;
+  background: #238636;
 }
 
 #toggleBtn:hover {
   opacity: 0.9;
+}
+
+.card.left{
+  left:100px;
+}
+
+.card.right{
+  right:100px;
+}
+
+.astronaut {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: 400px; 
+  height: auto;
+  z-index: 5; 
+}
+@media (max-width:1024px){
+  .astronaut{
+    width: 180px;
+    top: 40px;
+    right: 10px;
+  }
+}
+@media (max-width:768px){
+  .card{
+    left:50% !important;
+    right: auto !important;
+    transform: translateX(-50%);
+    width: 90%;
+    font-size: 18px;
+  }
+  .astronaut{
+    position: relative;   
+    display: block;
+    margin: 20px auto;    
+    width: 150px;
+  }
 }

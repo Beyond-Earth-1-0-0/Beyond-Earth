@@ -4,290 +4,319 @@ import * as THREE from "three";
 // Persistent velocity for smooth motion
 const velocity = new THREE.Vector3();
 
-// References set during init
+// References
 let spaceship = null;
 let camera = null;
-
-// Head movement limits inside cockpit
-const MAX_YAW = THREE.MathUtils.degToRad(60);
-const MAX_PITCH = THREE.MathUtils.degToRad(45);
-const SMOOTHING = 0.12;
-
-// Head rotation state
-let yaw = 0;
-let pitch = 0;
-let yawTarget = 0;
-let pitchTarget = 0;
 
 // Key state
 const keys = Object.create(null);
 
-// Enhanced movement settings
+// Movement settings
 const MOVE_SPEED = 45;
 const ROTATION_SPEED = 1.0;
 const DAMPING = 0.90;
 
-// Preallocated vectors (avoid GC pressure)
+// Preallocated vectors
 const forward = new THREE.Vector3();
 const right = new THREE.Vector3();
 const up = new THREE.Vector3();
 
-// Mouse lock state
+// Mouse lock
 let isPointerLocked = false;
 
+// Joystick state
+let moveJoystick = { active: false, x: 0, y: 0 };
+let lookJoystick = { active: false, x: 0, y: 0 };
+
+// Device rotation (for mobile tilting)
+let tiltX = 0, tiltY = 0;
+
 /**
- * Initializes enhanced controls with better user feedback
- * @param {THREE.Object3D} spaceshipRef - Controlled spaceship.
- * @param {THREE.Camera} cameraRef - Cockpit camera.
+ * Initialize cockpit controls
  */
 export function initControls(spaceshipRef, cameraRef) {
   spaceship = spaceshipRef;
   camera = cameraRef;
 
-  // Request pointer lock on canvas click
   const canvas = document.querySelector('canvas');
   if (canvas) {
-    canvas.addEventListener('click', () => {
-      canvas.requestPointerLock();
-    });
-  }
-
-  // Enhanced pointer lock event listeners
-  document.addEventListener('pointerlockchange', onPointerLockChange);
-  document.addEventListener('mozpointerlockchange', onPointerLockChange);
-  document.addEventListener('webkitpointerlockchange', onPointerLockChange);
-
-  document.addEventListener("mousemove", onMouseMove);
-  document.addEventListener("keydown", onKeyDown);
-  document.addEventListener("keyup", onKeyUp);
-
-  // Disable context menu on canvas
-  if (canvas) {
+    canvas.addEventListener('click', () => canvas.requestPointerLock());
     canvas.addEventListener('contextmenu', (e) => e.preventDefault());
   }
 
-  // Enhanced scroll and key handling
+  document.addEventListener('pointerlockchange', onPointerLockChange);
+  document.addEventListener('mousemove', onMouseMove);
+  document.addEventListener('keydown', onKeyDown);
+  document.addEventListener('keyup', onKeyUp);
+
   document.addEventListener('wheel', (e) => {
-    if (isPointerLocked) {
-      e.preventDefault();
-    }
+    if (isPointerLocked) e.preventDefault();
   }, { passive: false });
 
-  // Prevent default behavior for movement keys
   document.addEventListener('keydown', (e) => {
-    if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Space'].includes(e.key)) {
-      e.preventDefault();
-    }
+    if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Space'].includes(e.key)) e.preventDefault();
   });
 
-  console.log("Enhanced cockpit controls initialized");
+  // Mobile joystick initialization
+  initMobileControls();
+
+  // Device tilt for rotation
+  if (window.DeviceOrientationEvent) {
+    window.addEventListener('deviceorientation', (event) => {
+      tiltX = event.gamma || 0; // left/right tilt
+      tiltY = event.beta || 0;  // forward/back tilt
+    }, true);
+  }
+
+  console.log("Unified cockpit controls initialized");
 }
 
+/**
+ * Pointer lock status
+ */
 function onPointerLockChange() {
-  isPointerLocked = document.pointerLockElement !== null ||
-    document.mozPointerLockElement !== null ||
-    document.webkitPointerLockElement !== null;
-
-  // Update UI to show control status
+  isPointerLocked = !!document.pointerLockElement;
   updateControlStatus(isPointerLocked);
-
-  if (isPointerLocked) {
-    console.log("Cockpit controls active - use WASD to navigate, mouse to look around");
-  } else {
-    console.log("Click canvas to enter cockpit mode, ESC to exit");
-  }
+  console.log(isPointerLocked ? "Desktop controls active: WASD + mouse" : "Click canvas to enter cockpit mode");
 }
 
 function updateControlStatus(locked) {
-  const statusElement = document.getElementById('status-display');
-  if (statusElement) {
-    if (locked) {
-      statusElement.style.borderColor = '#00ff88';
-      statusElement.style.boxShadow = '0 0 25px rgba(0, 255, 136, 0.3)';
-    } else {
-      statusElement.style.borderColor = '#00ffff';
-      statusElement.style.boxShadow = '0 0 25px rgba(0, 255, 255, 0.3)';
-    }
+  const status = document.getElementById('status-display');
+  if (!status) return;
+
+  if (locked) {
+    status.style.borderColor = '#00ff88';
+    status.style.boxShadow = '0 0 25px rgba(0,255,136,0.3)';
+  } else {
+    status.style.borderColor = '#00ffff';
+    status.style.boxShadow = '0 0 25px rgba(0,255,255,0.3)';
   }
 }
 
+/**
+ * Keyboard handlers
+ */
 function onKeyDown(event) {
   const key = event.key.toLowerCase();
   keys[key] = true;
 
-  // Exit pointer lock with escape
-  if (key === 'escape' && isPointerLocked) {
-    document.exitPointerLock();
-  }
-
-  // Enhanced keyboard shortcuts
-  if (isPointerLocked) {
-    switch (key) {
-      case 'r': // Reset orientation
-        resetOrientation();
-        break;
-      case 'c': // Center view
-        centerView();
-        break;
-    }
-  }
+  if (key === 'escape' && isPointerLocked) document.exitPointerLock();
 }
 
 function onKeyUp(event) {
   keys[event.key.toLowerCase()] = false;
 }
 
+/**
+ * Mouse movement for desktop (optional view rotation)
+ */
 function onMouseMove(event) {
   if (!camera || !isPointerLocked) return;
-
-  const sensitivity = 0.0015; // Slightly reduced for better control
-  const movementX = event.movementX || 0;
-  const movementY = event.movementY || 0;
-
-  yawTarget = THREE.MathUtils.clamp(
-    yawTarget - movementX * sensitivity,
-    -MAX_YAW,
-    MAX_YAW
-  );
-
-  pitchTarget = THREE.MathUtils.clamp(
-    pitchTarget - movementY * sensitivity,
-    -MAX_PITCH,
-    MAX_PITCH
-  );
-}
-
-function resetOrientation() {
-  yawTarget = 0;
-  pitchTarget = 0;
-  console.log("Cockpit view reset to forward");
-}
-
-function centerView() {
-  yawTarget *= 0.1;
-  pitchTarget *= 0.1;
-  console.log("Cockpit view centered");
+  // keep this if you want mouse look, otherwise remove
 }
 
 /**
- * Enhanced controls update with better physics
- * @param {number} delta - Frame delta time.
+ * Setup right joystick (rotation control)
+ */
+function setupLookJoystick(baseId, handleId) {
+  const base = document.getElementById(baseId);
+  const handle = document.getElementById(handleId);
+
+  if (!base || !handle) return;
+
+  let dragging = false;
+
+  base.addEventListener("touchstart", () => {
+    dragging = true;
+    lookJoystick.active = true;
+  });
+
+  base.addEventListener("touchend", () => {
+    dragging = false;
+    lookJoystick.active = false;
+    handle.style.transform = "translate(-50%, -50%)"; // reset to center
+    lookJoystick.x = 0;
+    lookJoystick.y = 0;
+  });
+
+  base.addEventListener("touchmove", (e) => {
+    if (!dragging) return;
+    e.preventDefault();
+
+    const touch = e.touches[0];
+    const rect = base.getBoundingClientRect();
+    const centerX = rect.left + rect.width / 2;
+    const centerY = rect.top + rect.height / 2;
+
+    const dx = (touch.clientX - centerX) / (rect.width / 2);
+    const dy = (touch.clientY - centerY) / (rect.height / 2);
+
+    // clamp
+    lookJoystick.x = THREE.MathUtils.clamp(dx, -1, 1);
+    lookJoystick.y = THREE.MathUtils.clamp(dy, -1, 1);
+
+    // apply transform
+    const maxOffset = rect.width / 2 - handle.offsetWidth / 2;
+    handle.style.transform = `translate(${lookJoystick.x * maxOffset}px, ${lookJoystick.y * maxOffset}px)`;
+  }, { passive: false });
+}
+
+/**
+ * Mobile controls setup
+ */
+function initMobileControls() {
+  const leftBase = document.getElementById('joystick-base');
+  const rightBase = document.getElementById('look-base');
+  const leftHandle = document.getElementById('joystick-handle');
+  const rightHandle = document.getElementById('look-handle');
+
+  if (!leftBase || !rightBase || !leftHandle || !rightHandle) return;
+
+  // Left joystick (movement)
+  leftBase.addEventListener('touchstart', e => { 
+    moveJoystick.active = true; 
+    handleTouch(e, moveJoystick, leftBase, leftHandle); 
+  }, {passive:false});
+
+  leftBase.addEventListener('touchmove', e => { 
+    handleTouch(e, moveJoystick, leftBase, leftHandle); 
+  }, {passive:false});
+
+  leftBase.addEventListener('touchend', () => { 
+    moveJoystick.active = false; 
+  }, {passive:false});
+
+  // Right joystick (rotation)
+  setupLookJoystick('look-base', 'look-handle');
+}
+
+/**
+ * Joystick movement calculation
+ */
+function handleTouch(e, joystick, base, handle) {
+  e.preventDefault();
+  const touch = e.touches[0];
+  const rect = base.getBoundingClientRect();
+
+  const centerX = rect.left + rect.width / 2;
+  const centerY = rect.top + rect.height / 2;
+
+  let dx = touch.clientX - centerX;
+  let dy = touch.clientY - centerY;
+
+  let x = dx / (rect.width / 2);
+  let y = dy / (rect.height / 2);
+
+  joystick.x = THREE.MathUtils.clamp(x, -1, 1);
+  joystick.y = THREE.MathUtils.clamp(y, -1, 1);
+
+  updateHandlePosition(joystick, handle, rect);
+}
+
+/**
+ * Update handle position while keeping it centered
+ */
+function updateHandlePosition(joystick, handle, rect) {
+  const maxOffset = rect.width / 2 - handle.offsetWidth / 2;
+  handle.style.transform = `translate(calc(${joystick.x * maxOffset}px - 50%), calc(${joystick.y * maxOffset}px - 50%))`;
+}
+
+/**
+ * Update all controls (desktop + mobile)
  */
 export function updateControls(delta) {
-  if (!spaceship || !camera) return;
+  if (!spaceship) return;
 
-  // Smooth head movement inside cockpit with enhanced responsiveness
-  yaw += (yawTarget - yaw) * SMOOTHING;
-  pitch += (pitchTarget - pitch) * SMOOTHING;
-
-  // Apply head rotation to camera with smooth interpolation
-  camera.rotation.order = 'YXZ';
-  camera.rotation.y = yaw;
-  camera.rotation.x = pitch;
-
-  // Get spaceship's local direction vectors
+  // Spaceship axes
   forward.set(0, 0, -1).applyQuaternion(spaceship.quaternion).normalize();
   right.set(1, 0, 0).applyQuaternion(spaceship.quaternion).normalize();
   up.set(0, 1, 0).applyQuaternion(spaceship.quaternion).normalize();
 
-  // Enhanced WASD movement with acceleration
   const moveForce = MOVE_SPEED * delta;
   const currentSpeed = velocity.length();
-  const speedMultiplier = Math.min(1.0 + currentSpeed * 0.01, 2.0); // Progressive acceleration
+  const speedMultiplier = Math.min(1 + currentSpeed * 0.01, 2.0);
 
-  if (keys["w"]) {
-    velocity.addScaledVector(forward, moveForce * speedMultiplier);
-  }
-  if (keys["s"]) {
-    velocity.addScaledVector(forward, -moveForce * speedMultiplier);
-  }
-  if (keys["a"]) {
-    velocity.addScaledVector(right, -moveForce * speedMultiplier);
-  }
-  if (keys["d"]) {
-    velocity.addScaledVector(right, moveForce * speedMultiplier);
-  }
+  // Desktop keys (movement)
+  if (keys["w"]) velocity.addScaledVector(forward, moveForce * speedMultiplier);
+  if (keys["s"]) velocity.addScaledVector(forward, -moveForce * speedMultiplier);
+  if (keys["a"]) velocity.addScaledVector(right, -moveForce * speedMultiplier);
+  if (keys["d"]) velocity.addScaledVector(right, moveForce * speedMultiplier);
+  if (keys[" "]) velocity.addScaledVector(up, moveForce * speedMultiplier);
+  if (keys["shift"]) velocity.addScaledVector(up, -moveForce * speedMultiplier);
 
-  // Enhanced vertical movement
-  if (keys[" "]) { // Space for up
-    velocity.addScaledVector(up, moveForce * speedMultiplier);
-  }
-  if (keys["shift"]) { // Shift for down
-    velocity.addScaledVector(up, -moveForce * speedMultiplier);
+  // Left joystick (movement)
+  if (moveJoystick.active) {
+    velocity.addScaledVector(forward, -moveJoystick.y * moveForce * speedMultiplier);
+    velocity.addScaledVector(right, moveJoystick.x * moveForce * speedMultiplier);
   }
 
-  // Smooth rotation with enhanced responsiveness
-  const rotationForce = ROTATION_SPEED * delta;
+  // Rotation keys
+  const rotForce = ROTATION_SPEED * delta;
+  if (keys["arrowup"]) spaceship.rotateX(rotForce);
+  if (keys["arrowdown"]) spaceship.rotateX(-rotForce);
+  if (keys["arrowleft"]) spaceship.rotateY(rotForce);
+  if (keys["arrowright"]) spaceship.rotateY(-rotForce);
+  if (keys["q"]) spaceship.rotateZ(rotForce);
+  if (keys["e"]) spaceship.rotateZ(-rotForce);
 
-  if (keys["arrowup"]) {
-    spaceship.rotateX(rotationForce);
-  }
-  if (keys["arrowdown"]) {
-    spaceship.rotateX(-rotationForce);
-  }
-  if (keys["arrowleft"]) {
-    spaceship.rotateY(rotationForce);
-  }
-  if (keys["arrowright"]) {
-    spaceship.rotateY(-rotationForce);
-  }
-
-  // Enhanced rotation with Q/E for roll
-  if (keys["q"]) {
-    spaceship.rotateZ(rotationForce);
-  }
-  if (keys["e"]) {
-    spaceship.rotateZ(-rotationForce);
+  // Right joystick -> spaceship rotation (just like arrow keys)
+  if (lookJoystick.active) {
+    spaceship.rotateX(-lookJoystick.y * rotForce * 2); // pitch
+    spaceship.rotateY(-lookJoystick.x * rotForce * 2); // yaw
   }
 
-  // Apply velocity with enhanced physics
+  // Apply velocity & damping
   spaceship.position.add(velocity);
-
-  // Enhanced damping based on movement state
-  const activeDamping = (keys["w"] || keys["a"] || keys["s"] || keys["d"] || keys[" "] || keys["shift"])
-    ? DAMPING * 1.02 // Less damping when actively moving
-    : DAMPING * 0.98; // More damping when coasting
-
+  const activeDamping = (keys["w"]||keys["a"]||keys["s"]||keys["d"]||keys[" "]||keys["shift"]||moveJoystick.active)
+    ? DAMPING * 1.02
+    : DAMPING * 0.98;
   velocity.multiplyScalar(activeDamping);
 
-  // Add subtle cockpit shake when moving fast
-  if (currentSpeed > 20 && camera) {
-    const shakeIntensity = Math.min(currentSpeed / 100, 0.02);
+  // Cockpit shake
+  if (currentSpeed > 20) {
     const shake = new THREE.Vector3(
-      (Math.random() - 0.5) * shakeIntensity,
-      (Math.random() - 0.5) * shakeIntensity,
-      (Math.random() - 0.5) * shakeIntensity
+      (Math.random() - 0.5) * 0.02,
+      (Math.random() - 0.5) * 0.02,
+      (Math.random() - 0.5) * 0.02
     );
     camera.position.add(shake);
   }
+
+  updateJoystickHandles();
+}
+
+function updateJoystickHandles() {
+  const leftBase = document.getElementById('joystick-base');
+  const rightBase = document.getElementById('look-base');
+  const leftHandle = document.getElementById('joystick-handle');
+  const rightHandle = document.getElementById('look-handle');
+
+  if (!leftBase || !rightBase || !leftHandle || !rightHandle) return;
+
+  if (!moveJoystick.active) {
+    moveJoystick.x = THREE.MathUtils.lerp(moveJoystick.x, 0, 0.2);
+    moveJoystick.y = THREE.MathUtils.lerp(moveJoystick.y, 0, 0.2);
+  }
+
+  if (!lookJoystick.active) {
+    lookJoystick.x = THREE.MathUtils.lerp(lookJoystick.x, 0, 0.2);
+    lookJoystick.y = THREE.MathUtils.lerp(lookJoystick.y, 0, 0.2);
+  }
+
+  updateHandlePosition(moveJoystick, leftHandle, leftBase.getBoundingClientRect());
+  updateHandlePosition(lookJoystick, rightHandle, rightBase.getBoundingClientRect());
 }
 
 /**
- * Get current velocity for physics calculations
+ * Expose velocity and info
  */
-export function getVelocity() {
-  return velocity.clone();
-}
-
-/**
- * Set spaceship velocity (for external physics)
- */
-export function setVelocity(newVelocity) {
-  velocity.copy(newVelocity);
-}
-
-/**
- * Get current control state info
- */
+export function getVelocity() { return velocity.clone(); }
+export function setVelocity(newVel) { velocity.copy(newVel); }
 export function getControlInfo() {
   return {
     isPointerLocked,
     speed: velocity.length(),
-    position: spaceship ? spaceship.position.clone() : new THREE.Vector3(),
-    rotation: {
-      yaw: yaw * THREE.MathUtils.RAD2DEG,
-      pitch: pitch * THREE.MathUtils.RAD2DEG
-    }
+    position: spaceship ? spaceship.position.clone() : new THREE.Vector3()
   };
 }
 
