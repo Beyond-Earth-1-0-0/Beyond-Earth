@@ -19,7 +19,7 @@ export class DataManager {
         try {
             console.log("Attempting to load data from API...");
 
-            const response = await fetch("https://beyond-earth-backend.calmplant-c87294f1.uaenorth.azurecontainerapps.io/dataset", {
+            const response = await fetch("http://127.0.0.1:5500/dataset?num_rows=500", {
                 signal: this.abortController.signal,
                 headers: {
                     Connection: "keep-alive",

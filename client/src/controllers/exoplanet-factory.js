@@ -3,9 +3,7 @@ import * as THREE from "three";
 import { landOnPlanet } from "../utilities/spaceship-physics-utils.js";
 import { show3DPlanetInfo } from "./exoplanet-ui-controller.js";
 import { loadDefaultData } from "../data management/planet-data-provider.js";
-import { createRealisticPlanetTexture } from "./texture-generator.js";
-import { isTypingInInput } from "./cockpit-controls.js";
-
+import { createRealisticPlanetTexture } from "./texture-generator.js"
 // Config
 const MIN_PLANET_RADIUS = 2;
 const MAX_PLANET_RADIUS = 12;
@@ -19,43 +17,43 @@ const PLANET_TYPES = [
     color: { h: 30, s: 60, l: 40 },
     roughness: 0.8,
     metalness: 0.2,
-    emissive: 0x000000,
+    emissive: 0x000000
   },
   {
     name: "Gas Giant",
     color: { h: 220, s: 70, l: 50 },
     roughness: 0.3,
     metalness: 0.1,
-    emissive: 0x001122,
+    emissive: 0x001122
   },
   {
     name: "Ice",
     color: { h: 200, s: 80, l: 70 },
     roughness: 0.1,
     metalness: 0.9,
-    emissive: 0x001133,
+    emissive: 0x001133
   },
   {
     name: "Volcanic",
     color: { h: 15, s: 90, l: 30 },
     roughness: 0.9,
     metalness: 0.1,
-    emissive: 0x331100,
+    emissive: 0x331100
   },
   {
     name: "Ocean",
     color: { h: 240, s: 80, l: 60 },
     roughness: 0.0,
     metalness: 0.8,
-    emissive: 0x000033,
+    emissive: 0x000033
   },
   {
     name: "Earth-like",
     color: { h: 120, s: 70, l: 45 },
     roughness: 0.6,
     metalness: 0.3,
-    emissive: 0x000022,
-  },
+    emissive: 0x000022
+  }
 ];
 
 // Audio context for futuristic sounds
@@ -82,26 +80,17 @@ function playFuturisticScanSound() {
   oscillator2.connect(envelope);
   envelope.connect(gainNode);
 
-  oscillator1.type = "sine";
-  oscillator2.type = "sawtooth";
+  oscillator1.type = 'sine';
+  oscillator2.type = 'sawtooth';
   oscillator1.frequency.setValueAtTime(800, audioContext.currentTime);
   oscillator2.frequency.setValueAtTime(400, audioContext.currentTime);
 
-  oscillator1.frequency.exponentialRampToValueAtTime(
-    1200,
-    audioContext.currentTime + 0.3
-  );
-  oscillator2.frequency.exponentialRampToValueAtTime(
-    200,
-    audioContext.currentTime + 0.3
-  );
+  oscillator1.frequency.exponentialRampToValueAtTime(1200, audioContext.currentTime + 0.3);
+  oscillator2.frequency.exponentialRampToValueAtTime(200, audioContext.currentTime + 0.3);
 
   envelope.gain.setValueAtTime(0, audioContext.currentTime);
   envelope.gain.linearRampToValueAtTime(0.4, audioContext.currentTime + 0.1);
-  envelope.gain.exponentialRampToValueAtTime(
-    0.01,
-    audioContext.currentTime + 0.8
-  );
+  envelope.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.8);
 
   oscillator1.start(audioContext.currentTime);
   oscillator2.start(audioContext.currentTime);
@@ -118,19 +107,13 @@ function playTargetSound() {
   oscillator.connect(envelope);
   envelope.connect(gainNode);
 
-  oscillator.type = "square";
+  oscillator.type = 'square';
   oscillator.frequency.setValueAtTime(600, audioContext.currentTime);
-  oscillator.frequency.exponentialRampToValueAtTime(
-    800,
-    audioContext.currentTime + 0.1
-  );
+  oscillator.frequency.exponentialRampToValueAtTime(800, audioContext.currentTime + 0.1);
 
   envelope.gain.setValueAtTime(0, audioContext.currentTime);
   envelope.gain.linearRampToValueAtTime(0.2, audioContext.currentTime + 0.05);
-  envelope.gain.exponentialRampToValueAtTime(
-    0.01,
-    audioContext.currentTime + 0.2
-  );
+  envelope.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.2);
 
   oscillator.start(audioContext.currentTime);
   oscillator.stop(audioContext.currentTime + 0.2);
@@ -140,13 +123,13 @@ function getPlanetTypeConfig(typeName) {
   const typeMap = {
     "Super Earth": PLANET_TYPES[0],
     "Earth-like": PLANET_TYPES[5],
-    Terrestrial: PLANET_TYPES[0],
+    "Terrestrial": PLANET_TYPES[0],
     "Rocky Super Earth": PLANET_TYPES[0],
     "Sub-Neptune": PLANET_TYPES[1],
     "Gas Giant": PLANET_TYPES[1],
-    Ice: PLANET_TYPES[2],
-    Volcanic: PLANET_TYPES[3],
-    Ocean: PLANET_TYPES[4],
+    "Ice": PLANET_TYPES[2],
+    "Volcanic": PLANET_TYPES[3],
+    "Ocean": PLANET_TYPES[4]
   };
 
   return typeMap[typeName] || PLANET_TYPES[0];
@@ -173,17 +156,11 @@ function createPlanets(scene, planetData = null) {
     if (planetInfo.radius) {
       const radiusMatch = planetInfo.radius.match(/([\d.,]+)/);
       if (radiusMatch) {
-        const radiusValue = parseFloat(radiusMatch[0].replace(/,/g, ""));
-        if (planetInfo.radius.includes("Earth")) {
-          radius = Math.max(
-            MIN_PLANET_RADIUS,
-            Math.min(MAX_PLANET_RADIUS, radiusValue * 3)
-          );
-        } else if (planetInfo.radius.includes("Jupiter")) {
-          radius = Math.max(
-            MIN_PLANET_RADIUS,
-            Math.min(MAX_PLANET_RADIUS, radiusValue * 8)
-          );
+        const radiusValue = parseFloat(radiusMatch[0].replace(/,/g, ''));
+        if (planetInfo.radius.includes('Earth')) {
+          radius = Math.max(MIN_PLANET_RADIUS, Math.min(MAX_PLANET_RADIUS, radiusValue * 3));
+        } else if (planetInfo.radius.includes('Jupiter')) {
+          radius = Math.max(MIN_PLANET_RADIUS, Math.min(MAX_PLANET_RADIUS, radiusValue * 8));
         }
       }
     }
@@ -204,11 +181,7 @@ function createPlanets(scene, planetData = null) {
     // geometry.attributes.position.needsUpdate = true;
     // geometry.computeVertexNormals();
 
-    const texture = createRealisticPlanetTexture(
-      planetInfo.type,
-      radius,
-      Math.random()
-    );
+    const texture = createRealisticPlanetTexture(planetInfo.type, radius, Math.random());
 
     // Enhanced material with texture
     const material = new THREE.MeshStandardMaterial({
@@ -218,7 +191,7 @@ function createPlanets(scene, planetData = null) {
       emissive: planetType.emissive,
       emissiveIntensity: Math.random() * 0.15,
       depthTest: true,
-      depthWrite: true,
+      depthWrite: true
     });
 
     const planet = new THREE.Mesh(geometry, material);
@@ -238,15 +211,11 @@ function createPlanets(scene, planetData = null) {
       hostStar: planetInfo.hostStar,
       discovery: planetInfo.discovery,
       habitability: planetInfo.habitability,
-      habitable:
-        planetInfo.habitability &&
-        planetInfo.habitability.includes("habitable"),
-      discoveryYear: planetInfo.discovery
-        ? planetInfo.discovery.match(/\d{4}/)?.[0]
-        : "N/A",
+      habitable: planetInfo.habitability && planetInfo.habitability.includes('habitable'),
+      discoveryYear: planetInfo.discovery ? planetInfo.discovery.match(/\d{4}/)?.[0] : 'N/A',
       position: { x, y, z },
       visualRadius: radius,
-      infoHUD: null,
+      infoHUD: null
     };
 
     planet.position.set(x, y, z);
@@ -256,16 +225,12 @@ function createPlanets(scene, planetData = null) {
 
     // Add scanning ring effect for habitable planets
     if (planet.userData.habitable) {
-      const ringGeometry = new THREE.RingGeometry(
-        radius * 1.2,
-        radius * 1.3,
-        32
-      );
+      const ringGeometry = new THREE.RingGeometry(radius * 1.2, radius * 1.3, 32);
       const ringMaterial = new THREE.MeshBasicMaterial({
         color: 0x00ff88,
         transparent: true,
         opacity: 0.3,
-        side: THREE.DoubleSide,
+        side: THREE.DoubleSide
       });
       const ring = new THREE.Mesh(ringGeometry, ringMaterial);
       ring.rotation.x = Math.PI / 2;
@@ -302,9 +267,8 @@ function enablePlanetInteractions(planets, camera, spaceship, planetTutor) {
     const intersects = raycaster.intersectObjects(planets);
 
     // Clear previous hover
-    if (hoveredPlanet && hoveredPlanet !== intersects[0]?.object) {
-      hoveredPlanet.material.emissiveIntensity =
-        hoveredPlanet.userData.originalEmissive || 0;
+    if (hoveredPlanet && hoveredPlanet !== (intersects[0]?.object)) {
+      hoveredPlanet.material.emissiveIntensity = hoveredPlanet.userData.originalEmissive || 0;
       hoveredPlanet = null;
     }
 
@@ -351,18 +315,14 @@ function enablePlanetInteractions(planets, camera, spaceship, planetTutor) {
 
   // Keyboard shortcuts
   document.addEventListener("keydown", (event) => {
-    // Ignore keyboard input if user is typing in an input/textarea
-    if (isTypingInInput()) {
-      return;
-    }
-    if (event.key.toLowerCase() === "t") {
+    if (event.key.toLowerCase() === 't') {
       const nearestPlanet = findNearestPlanet(planets, spaceship.position);
       if (nearestPlanet) {
         handlePlanetInteraction(nearestPlanet, spaceship, planetTutor);
       }
     }
 
-    if (event.key.toLowerCase() === "i") {
+    if (event.key.toLowerCase() === 'i') {
       const nearestPlanet = findNearestPlanet(planets, spaceship.position);
       if (nearestPlanet) {
         playFuturisticScanSound();
@@ -379,7 +339,6 @@ function handlePlanetInteraction(planet, spaceship, planetTutor) {
     "Is tutor showing?",
     planetTutor ? planetTutor.isShowing() : "tutor is null"
   );
-
   playFuturisticScanSound();
   landOnPlanet(spaceship, planet);
 
@@ -405,7 +364,7 @@ function findNearestPlanet(planets, position) {
   let nearest = null;
   let minDistance = Infinity;
 
-  planets.forEach((planet) => {
+  planets.forEach(planet => {
     const distance = planet.position.distanceTo(position);
     if (distance < minDistance) {
       minDistance = distance;
@@ -420,7 +379,7 @@ function animatePlanets(planets, delta) {
   planets.forEach((planet, index) => {
     const baseSpeed = 0.1;
     const sizeModifier = 1 / (planet.userData.visualRadius || 3);
-    const typeModifier = planet.userData.type === "Gas Giant" ? 1.5 : 1;
+    const typeModifier = planet.userData.type === 'Gas Giant' ? 1.5 : 1;
     const rotationSpeed = baseSpeed * sizeModifier * typeModifier;
 
     planet.rotation.y += rotationSpeed * delta;
@@ -429,12 +388,11 @@ function animatePlanets(planets, delta) {
     // Animate habitable rings
     if (planet.userData.habitableRing) {
       planet.userData.habitableRing.rotation.z += delta * 0.5;
-      planet.userData.habitableRing.material.opacity =
-        0.2 + Math.sin(Date.now() * 0.003) * 0.1;
+      planet.userData.habitableRing.material.opacity = 0.2 + Math.sin(Date.now() * 0.003) * 0.1;
     }
 
     // Subtle floating motion for gas giants
-    if (planet.userData.type === "Gas Giant") {
+    if (planet.userData.type === 'Gas Giant') {
       planet.position.y += Math.sin(Date.now() * 0.001 + index) * 0.1 * delta;
     }
   });
@@ -446,5 +404,5 @@ export {
   findNearestPlanet,
   animatePlanets,
   playFuturisticScanSound,
-  initAudio,
+  initAudio
 };
