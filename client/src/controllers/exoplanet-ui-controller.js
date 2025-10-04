@@ -60,10 +60,10 @@ export function createUI() {
 	audioIndicator.innerHTML = "AUDIO ACTIVE";
 	exoplanetView.appendChild(audioIndicator);
 
-	// Gear toggle for settings
+	// burger-menu toggle for settings
 	const settingsToggle = document.createElement("button");
 	settingsToggle.id = "settings-toggle";
-	settingsToggle.innerHTML = `<img src="../assets/gear-icon.png" alt="settings" style="width: 24px; height: 24px;">`;
+	settingsToggle.innerHTML = `<img src="../assets/burger-menu-icon.png" alt="settings" style="width: 24px; height: 24px;">`;
 	settingsToggle.addEventListener("click", toggleSettings);
 	exoplanetView.appendChild(settingsToggle);
 

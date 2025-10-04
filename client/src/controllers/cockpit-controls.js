@@ -25,7 +25,7 @@ const keys = Object.create(null);
 // Enhanced movement settings
 const MOVE_SPEED = 45;
 const ROTATION_SPEED = 1.0;
-const DAMPING = 0.9;
+const DAMPING = 0.90;
 
 // Preallocated vectors (avoid GC pressure)
 const forward = new THREE.Vector3();
@@ -45,17 +45,17 @@ export function initControls(spaceshipRef, cameraRef) {
   camera = cameraRef;
 
   // Request pointer lock on canvas click
-  const canvas = document.querySelector("canvas");
+  const canvas = document.querySelector('canvas');
   if (canvas) {
-    canvas.addEventListener("click", () => {
+    canvas.addEventListener('click', () => {
       canvas.requestPointerLock();
     });
   }
 
   // Enhanced pointer lock event listeners
-  document.addEventListener("pointerlockchange", onPointerLockChange);
-  document.addEventListener("mozpointerlockchange", onPointerLockChange);
-  document.addEventListener("webkitpointerlockchange", onPointerLockChange);
+  document.addEventListener('pointerlockchange', onPointerLockChange);
+  document.addEventListener('mozpointerlockchange', onPointerLockChange);
+  document.addEventListener('webkitpointerlockchange', onPointerLockChange);
 
   document.addEventListener("mousemove", onMouseMove);
   document.addEventListener("keydown", onKeyDown);
@@ -63,27 +63,19 @@ export function initControls(spaceshipRef, cameraRef) {
 
   // Disable context menu on canvas
   if (canvas) {
-    canvas.addEventListener("contextmenu", (e) => e.preventDefault());
+    canvas.addEventListener('contextmenu', (e) => e.preventDefault());
   }
 
   // Enhanced scroll and key handling
-  document.addEventListener(
-    "wheel",
-    (e) => {
-      if (isPointerLocked) {
-        e.preventDefault();
-      }
-    },
-    { passive: false }
-  );
+  document.addEventListener('wheel', (e) => {
+    if (isPointerLocked) {
+      e.preventDefault();
+    }
+  }, { passive: false });
 
   // Prevent default behavior for movement keys
-  document.addEventListener("keydown", (e) => {
-    if (
-      ["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", "Space"].includes(
-        e.key
-      )
-    ) {
+  document.addEventListener('keydown', (e) => {
+    if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Space'].includes(e.key)) {
       e.preventDefault();
     }
   });
@@ -92,8 +84,7 @@ export function initControls(spaceshipRef, cameraRef) {
 }
 
 function onPointerLockChange() {
-  isPointerLocked =
-    document.pointerLockElement !== null ||
+  isPointerLocked = document.pointerLockElement !== null ||
     document.mozPointerLockElement !== null ||
     document.webkitPointerLockElement !== null;
 
@@ -101,48 +92,41 @@ function onPointerLockChange() {
   updateControlStatus(isPointerLocked);
 
   if (isPointerLocked) {
-    console.log(
-      "Cockpit controls active - use WASD to navigate, mouse to look around"
-    );
+    console.log("Cockpit controls active - use WASD to navigate, mouse to look around");
   } else {
     console.log("Click canvas to enter cockpit mode, ESC to exit");
   }
 }
 
 function updateControlStatus(locked) {
-  const statusElement = document.getElementById("status-display");
+  const statusElement = document.getElementById('status-display');
   if (statusElement) {
     if (locked) {
-      statusElement.style.borderColor = "#00ff88";
-      statusElement.style.boxShadow = "0 0 25px rgba(0, 255, 136, 0.3)";
+      statusElement.style.borderColor = '#00ff88';
+      statusElement.style.boxShadow = '0 0 25px rgba(0, 255, 136, 0.3)';
     } else {
-      statusElement.style.borderColor = "#00ffff";
-      statusElement.style.boxShadow = "0 0 25px rgba(0, 255, 255, 0.3)";
+      statusElement.style.borderColor = '#00ffff';
+      statusElement.style.boxShadow = '0 0 25px rgba(0, 255, 255, 0.3)';
     }
   }
 }
 
 function onKeyDown(event) {
-  // Ignore keyboard input if user is typing in an input/textarea
-  if (isTypingInInput()) {
-    return;
-  }
-
   const key = event.key.toLowerCase();
   keys[key] = true;
 
   // Exit pointer lock with escape
-  if (key === "escape" && isPointerLocked) {
+  if (key === 'escape' && isPointerLocked) {
     document.exitPointerLock();
   }
 
   // Enhanced keyboard shortcuts
   if (isPointerLocked) {
     switch (key) {
-      case "r": // Reset orientation
+      case 'r': // Reset orientation
         resetOrientation();
         break;
-      case "c": // Center view
+      case 'c': // Center view
         centerView();
         break;
     }
@@ -150,25 +134,7 @@ function onKeyDown(event) {
 }
 
 function onKeyUp(event) {
-  // Ignore keyboard input if user is typing in an input/textarea
-  if (isTypingInInput()) {
-    return;
-  }
-
   keys[event.key.toLowerCase()] = false;
-}
-
-/**
- * Check if user is currently typing in an input field
- */
-export function isTypingInInput() {
-  const activeElement = document.activeElement;
-  return (
-    activeElement &&
-    (activeElement.tagName === "INPUT" ||
-      activeElement.tagName === "TEXTAREA" ||
-      activeElement.isContentEditable)
-  );
 }
 
 function onMouseMove(event) {
@@ -194,13 +160,13 @@ function onMouseMove(event) {
 function resetOrientation() {
   yawTarget = 0;
   pitchTarget = 0;
-  console.log("ðŸŽ¯ Cockpit view reset to forward");
+  console.log("Cockpit view reset to forward");
 }
 
 function centerView() {
   yawTarget *= 0.1;
   pitchTarget *= 0.1;
-  console.log("ðŸ“ Cockpit view centered");
+  console.log("Cockpit view centered");
 }
 
 /**
@@ -215,7 +181,7 @@ export function updateControls(delta) {
   pitch += (pitchTarget - pitch) * SMOOTHING;
 
   // Apply head rotation to camera with smooth interpolation
-  camera.rotation.order = "YXZ";
+  camera.rotation.order = 'YXZ';
   camera.rotation.y = yaw;
   camera.rotation.x = pitch;
 
@@ -243,12 +209,10 @@ export function updateControls(delta) {
   }
 
   // Enhanced vertical movement
-  if (keys[" "]) {
-    // Space for up
+  if (keys[" "]) { // Space for up
     velocity.addScaledVector(up, moveForce * speedMultiplier);
   }
-  if (keys["shift"]) {
-    // Shift for down
+  if (keys["shift"]) { // Shift for down
     velocity.addScaledVector(up, -moveForce * speedMultiplier);
   }
 
@@ -280,15 +244,9 @@ export function updateControls(delta) {
   spaceship.position.add(velocity);
 
   // Enhanced damping based on movement state
-  const activeDamping =
-    keys["w"] ||
-    keys["a"] ||
-    keys["s"] ||
-    keys["d"] ||
-    keys[" "] ||
-    keys["shift"]
-      ? DAMPING * 1.02 // Less damping when actively moving
-      : DAMPING * 0.98; // More damping when coasting
+  const activeDamping = (keys["w"] || keys["a"] || keys["s"] || keys["d"] || keys[" "] || keys["shift"])
+    ? DAMPING * 1.02 // Less damping when actively moving
+    : DAMPING * 0.98; // More damping when coasting
 
   velocity.multiplyScalar(activeDamping);
 
@@ -328,8 +286,8 @@ export function getControlInfo() {
     position: spaceship ? spaceship.position.clone() : new THREE.Vector3(),
     rotation: {
       yaw: yaw * THREE.MathUtils.RAD2DEG,
-      pitch: pitch * THREE.MathUtils.RAD2DEG,
-    },
+      pitch: pitch * THREE.MathUtils.RAD2DEG
+    }
   };
 }
 
