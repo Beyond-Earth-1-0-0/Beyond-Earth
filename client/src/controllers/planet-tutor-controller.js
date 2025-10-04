@@ -12,8 +12,6 @@ class PlanetTutor {
     this.messageIndex = 0;
     this.messages = [];
     this.initialized = false;
-    this.chatMode = false; // New: Track if we're in chat mode
-    this.chatHistory = []; // New: Store conversation history
 
     // Initialize immediately since we're created after DOM ready
     this.init();
@@ -42,153 +40,121 @@ class PlanetTutor {
     this.tutorElement.id = "planet-tutor";
     this.tutorElement.className = "planet-tutor hidden";
     this.tutorElement.style.cssText = `
-          position: fixed;
-          bottom: 20px;
-          right: 20px;
-          display: flex;
-          gap: 15px;
-          align-items: flex-end;
-          z-index: 10000;
-          transition: all 0.3s ease;
-        `;
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        display: flex;
+        gap: 15px;
+        align-items: flex-end;
+        z-index: 10000;
+        transition: all 0.3s ease;
+      `;
 
     this.tutorElement.innerHTML = `
-                <div class="tutor-avatar" style="
-                  width: 100px;
-                  height: 100px;
-                  background: rgba(0, 20, 40, 0.9);
-                  border: 2px solid #00ffff;
-                  border-radius: 50%;
-                  display: flex;
-                  align-items: center;
-                  justify-content: center;
-                  overflow: hidden;
-                  box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
-                ">
-                    <img src="../assets/astro.gif" alt="Space Tutor" class="tutor-gif" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.style.display='none'">
-                </div>
-                <div class="tutor-dialog" style="
-                  background: rgba(0, 20, 40, 0.95);
-                  border: 2px solid #00ffff;
-                  border-radius: 15px;
-                  padding: 0;
-                  min-width: 400px;
-                  max-width: 500px;
-                  box-shadow: 0 0 30px rgba(0, 255, 255, 0.3);
-                  backdrop-filter: blur(10px);
-                  overflow: hidden;
-                ">
-                    <div class="dialog-header" style="
-                      background: linear-gradient(135deg, #001a33, #003366);
-                      padding: 15px 20px;
-                      display: flex;
-                      justify-content: space-between;
-                      align-items: center;
-                      border-bottom: 1px solid #00ffff;
-                    ">
-                        <span class="tutor-name" style="
-                          color: #00ffff;
-                          font-family: 'Orbitron', 'Courier New', monospace;
-                          font-weight: bold;
-                          font-size: 16px;
-                          text-shadow: 0 0 10px rgba(0, 255, 255, 0.8);
-                          letter-spacing: 2px;
-                        ">ASTRO GUIDE</span>
-                        <button class="dialog-close" id="closeTutor" style="
-                          background: transparent;
-                          border: none;
-                          color: #00ffff;
-                          font-size: 24px;
-                          cursor: pointer;
-                          width: 30px;
-                          height: 30px;
-                          display: flex;
-                          align-items: center;
-                          justify-content: center;
-                          border-radius: 50%;
-                          transition: all 0.2s;
-                        ">×</button>
-                    </div>
-                    <div class="dialog-content" id="tutorMessage" style="
-                      padding: 20px;
-                      color: #ffffff;
-                      font-family: 'Arial', sans-serif;
-                      font-size: 16px;
-                      line-height: 1.6;
-                      min-height: 100px;
-                      max-height: 300px;
-                      overflow-y: auto;
-                    ">
-                        Welcome, space explorer!
-                    </div>
-                    <div class="chat-input-container" id="chatInputContainer" style="
-                      display: none;
-                      padding: 15px 20px;
-                      border-top: 1px solid rgba(0, 255, 255, 0.3);
-                      background: rgba(0, 10, 20, 0.5);
-                    ">
-                        <div style="display: flex; gap: 10px;">
-                            <input type="text" id="chatInput" placeholder="Ask me anything about this planet..." style="
-                              flex: 1;
-                              padding: 10px;
-                              background: rgba(0, 20, 40, 0.8);
-                              border: 1px solid #00ffff;
-                              border-radius: 5px;
-                              color: #ffffff;
-                              font-family: 'Arial', sans-serif;
-                              font-size: 14px;
-                            ">
-                            <button class="dialog-btn" id="sendChatBtn" style="
-                              padding: 10px 20px;
-                              background: linear-gradient(135deg, #00ffff, #0088ff);
-                              color: #001a33;
-                              border: none;
-                              border-radius: 5px;
-                              font-family: 'Orbitron', 'Arial', sans-serif;
-                              font-weight: bold;
-                              font-size: 14px;
-                              cursor: pointer;
-                              transition: all 0.3s;
-                              box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
-                            ">Send</button>
-                        </div>
-                    </div>
-                    <div class="dialog-footer" id="dialogFooter" style="
-                      padding: 15px 20px;
-                      display: flex;
-                      gap: 10px;
-                      justify-content: flex-end;
-                      border-top: 1px solid rgba(0, 255, 255, 0.3);
-                      background: rgba(0, 10, 20, 0.5);
-                    ">
-                        <button class="dialog-btn" id="nextMessage" style="
-                          padding: 10px 20px;
-                          background: linear-gradient(135deg, #00ffff, #0088ff);
-                          color: #001a33;
-                          border: none;
-                          border-radius: 5px;
-                          font-family: 'Orbitron', 'Arial', sans-serif;
-                          font-weight: bold;
-                          font-size: 14px;
-                          cursor: pointer;
-                          transition: all 0.3s;
-                          box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
-                        ">Next</button>
-                        <button class="dialog-btn secondary" id="skipTutor" style="
-                          padding: 10px 20px;
-                          background: transparent;
-                          border: 2px solid #00ffff;
-                          color: #00ffff;
-                          border-radius: 5px;
-                          font-family: 'Orbitron', 'Arial', sans-serif;
-                          font-weight: bold;
-                          font-size: 14px;
-                          cursor: pointer;
-                          transition: all 0.3s;
-                        ">Skip</button>
-                    </div>
-                </div>
-            `;
+              <div class="tutor-avatar" style="
+                width: 100px;
+                height: 100px;
+                background: rgba(0, 20, 40, 0.9);
+                border: 2px solid #00ffff;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                overflow: hidden;
+                box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+              ">
+                  <img src="../assets/astro.gif" alt="Space Tutor" class="tutor-gif" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.style.display='none'">
+              </div>
+              <div class="tutor-dialog" style="
+                background: rgba(0, 20, 40, 0.95);
+                border: 2px solid #00ffff;
+                border-radius: 15px;
+                padding: 0;
+                min-width: 400px;
+                max-width: 500px;
+                box-shadow: 0 0 30px rgba(0, 255, 255, 0.3);
+                backdrop-filter: blur(10px);
+                overflow: hidden;
+              ">
+                  <div class="dialog-header" style="
+                    background: linear-gradient(135deg, #001a33, #003366);
+                    padding: 15px 20px;
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    border-bottom: 1px solid #00ffff;
+                  ">
+                      <span class="tutor-name" style="
+                        color: #00ffff;
+                        font-family: 'Orbitron', 'Courier New', monospace;
+                        font-weight: bold;
+                        font-size: 16px;
+                        text-shadow: 0 0 10px rgba(0, 255, 255, 0.8);
+                        letter-spacing: 2px;
+                      ">ASTRO GUIDE</span>
+                      <button class="dialog-close" id="closeTutor" style="
+                        background: transparent;
+                        border: none;
+                        color: #00ffff;
+                        font-size: 24px;
+                        cursor: pointer;
+                        width: 30px;
+                        height: 30px;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        border-radius: 50%;
+                        transition: all 0.2s;
+                      ">×</button>
+                  </div>
+                  <div class="dialog-content" id="tutorMessage" style="
+                    padding: 20px;
+                    color: #ffffff;
+                    font-family: 'Arial', sans-serif;
+                    font-size: 16px;
+                    line-height: 1.6;
+                    min-height: 100px;
+                    max-height: 200px;
+                    overflow-y: auto;
+                  ">
+                      Welcome, space explorer!
+                  </div>
+                  <div class="dialog-footer" style="
+                    padding: 15px 20px;
+                    display: flex;
+                    gap: 10px;
+                    justify-content: flex-end;
+                    border-top: 1px solid rgba(0, 255, 255, 0.3);
+                    background: rgba(0, 10, 20, 0.5);
+                  ">
+                      <button class="dialog-btn" id="nextMessage" style="
+                        padding: 10px 20px;
+                        background: linear-gradient(135deg, #00ffff, #0088ff);
+                        color: #001a33;
+                        border: none;
+                        border-radius: 5px;
+                        font-family: 'Orbitron', 'Arial', sans-serif;
+                        font-weight: bold;
+                        font-size: 14px;
+                        cursor: pointer;
+                        transition: all 0.3s;
+                        box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+                      ">Next</button>
+                      <button class="dialog-btn secondary" id="skipTutor" style="
+                        padding: 10px 20px;
+                        background: transparent;
+                        border: 2px solid #00ffff;
+                        color: #00ffff;
+                        border-radius: 5px;
+                        font-family: 'Orbitron', 'Arial', sans-serif;
+                        font-weight: bold;
+                        font-size: 14px;
+                        cursor: pointer;
+                        transition: all 0.3s;
+                      ">Skip</button>
+                  </div>
+              </div>
+          `;
 
     document.body.appendChild(this.tutorElement);
     console.log(
@@ -200,10 +166,8 @@ class PlanetTutor {
     const closeBtn = document.getElementById("closeTutor");
     const skipBtn = document.getElementById("skipTutor");
     const nextBtn = document.getElementById("nextMessage");
-    const sendChatBtn = document.getElementById("sendChatBtn");
-    const chatInput = document.getElementById("chatInput");
 
-    console.log("Buttons found:", { closeBtn, skipBtn, nextBtn, sendChatBtn });
+    console.log("Buttons found:", { closeBtn, skipBtn, nextBtn });
 
     if (closeBtn) {
       closeBtn.addEventListener("click", () => {
@@ -215,7 +179,7 @@ class PlanetTutor {
     if (skipBtn) {
       skipBtn.addEventListener("click", () => {
         console.log("Skip button clicked");
-        this.enterChatMode();
+        this.hide();
       });
     }
 
@@ -223,20 +187,6 @@ class PlanetTutor {
       nextBtn.addEventListener("click", () => {
         console.log("Next button clicked");
         this.showNextMessage();
-      });
-    }
-
-    if (sendChatBtn) {
-      sendChatBtn.addEventListener("click", () => {
-        this.sendChatMessage();
-      });
-    }
-
-    if (chatInput) {
-      chatInput.addEventListener("keypress", (e) => {
-        if (e.key === "Enter") {
-          this.sendChatMessage();
-        }
       });
     }
 
@@ -291,7 +241,7 @@ class PlanetTutor {
         `Despite the extreme heat, these planets are fascinating laboratories for studying atmospheric dynamics.`,
         `Interestingly, Hot Jupiters are thought to have migrated inward from cooler regions of their solar systems.`,
       ],
-      "Super Earth": [
+      "Super-Earth": [
         `You've arrived at ${planetData.name}, a Super-Earth exoplanet!`,
         `These planets are larger than Earth but smaller than Neptune, with masses up to 10 times Earth's.`,
         `Some Super-Earths might have conditions suitable for life, making them prime targets in our search.`,
@@ -315,12 +265,6 @@ class PlanetTutor {
         `Gas giants play a crucial role in shaping their solar systems' architecture.`,
         `The powerful magnetic fields here would put Earth's to shame!`,
       ],
-      "Earth-like": [
-        `Welcome to ${planetData.name}, an Earth-like world!`,
-        `This planet shares similarities with our home world, making it incredibly interesting to study.`,
-        `Scientists are particularly excited about planets like this in the search for extraterrestrial life.`,
-        `The conditions here might allow for liquid water on the surface!`,
-      ],
     };
 
     // Get planet type or use default
@@ -332,12 +276,14 @@ class PlanetTutor {
 
     if (planetData.distance) {
       customStory.push(
-        `This world is located ${planetData.distance} from Earth.`
+        `This world is located ${planetData.distance} light-years from Earth.`
       );
     }
 
     if (planetData.radius) {
-      customStory.push(`Its radius is approximately ${planetData.radius}.`);
+      customStory.push(
+        `Its radius is approximately ${planetData.radius} times that of Earth.`
+      );
     }
 
     console.log("Generated story with", customStory.length, "messages");
@@ -345,7 +291,11 @@ class PlanetTutor {
   }
 
   show(planetData) {
-    console.log("Show method called with planet:", planetData);
+    console.log("=== SHOW METHOD CALLED ===");
+    console.log("Planet data received:", planetData);
+    console.log("Tutor initialized?", this.initialized);
+    console.log("Tutor element exists?", this.tutorElement);
+    console.log("Is active?", this.isActive);
 
     // Make sure UI is initialized
     if (!this.initialized || !this.tutorElement) {
@@ -365,8 +315,6 @@ class PlanetTutor {
     this.currentPlanet = planetData;
     this.isActive = true;
     this.messageIndex = 0;
-    this.chatMode = false;
-    this.chatHistory = [];
     this.messages = this.getPlanetStory(planetData);
 
     console.log("Messages prepared:", this.messages);
@@ -379,6 +327,7 @@ class PlanetTutor {
 
     // Show tutor - FORCE visibility with inline styles
     console.log("Showing tutor element...");
+    console.log("Current classes:", this.tutorElement.className);
 
     this.tutorElement.classList.remove("hidden");
     this.tutorElement.classList.add("active");
@@ -391,6 +340,14 @@ class PlanetTutor {
     this.tutorElement.style.visibility = "visible";
 
     console.log("Tutor element should now be visible");
+    console.log(
+      "Element computed display:",
+      window.getComputedStyle(this.tutorElement).display
+    );
+    console.log(
+      "Element computed opacity:",
+      window.getComputedStyle(this.tutorElement).opacity
+    );
 
     // Show first message with typewriter effect
     console.log("Showing first message");
@@ -438,141 +395,16 @@ class PlanetTutor {
       this.showMessage(this.messages[this.messageIndex]);
       this.playChatSound();
     } else {
-      // End of messages - enter chat mode
-      console.log("Story finished, entering chat mode");
-      this.enterChatMode();
+      // End of messages
+      console.log("No more messages, hiding tutor");
+      this.hide();
     }
 
     // Update button text
     const nextBtn = document.getElementById("nextMessage");
     if (this.messageIndex >= this.messages.length - 1) {
-      nextBtn.textContent = "Ask Questions";
+      nextBtn.textContent = "Finish";
     }
-  }
-
-  enterChatMode() {
-    console.log("Entering chat mode");
-    this.chatMode = true;
-
-    // Hide story navigation buttons
-    const footer = document.getElementById("dialogFooter");
-    if (footer) {
-      footer.style.display = "none";
-    }
-
-    // Show chat input
-    const chatContainer = document.getElementById("chatInputContainer");
-    if (chatContainer) {
-      chatContainer.style.display = "block";
-    }
-
-    // Show welcome message for chat
-    const messageElement = document.getElementById("tutorMessage");
-    if (messageElement) {
-      // Clear typewriter interval
-      if (this.typewriterInterval) {
-        clearInterval(this.typewriterInterval);
-      }
-
-      messageElement.innerHTML = `
-            <div style="margin-bottom: 10px; padding: 10px; background: rgba(0, 255, 255, 0.1); border-radius: 5px;">
-              <strong style="color: #00ffff;">Story Complete!</strong><br>
-              <span style="color: #aaa; font-size: 14px;">Now you can ask me anything about ${this.currentPlanet.name} or exoplanets in general!</span>
-            </div>
-          `;
-    }
-
-    // Focus input
-    const chatInput = document.getElementById("chatInput");
-    if (chatInput) {
-      chatInput.focus();
-    }
-  }
-
-  async sendChatMessage() {
-    const chatInput = document.getElementById("chatInput");
-    const messageElement = document.getElementById("tutorMessage");
-
-    if (!chatInput || !messageElement) return;
-
-    const userMessage = chatInput.value.trim();
-    if (!userMessage) return;
-
-    // Add user message to display
-    this.addMessageToDisplay("You", userMessage, true);
-    chatInput.value = "";
-
-    // Show loading indicator
-    this.addMessageToDisplay("ASTRO", "Thinking...", false, true);
-
-    try {
-      // Call your Flask API
-      const response = await fetch("http://127.0.0.1:5000/api", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          message: userMessage,
-          planet: this.currentPlanet.name,
-        }),
-      });
-
-      const data = await response.json();
-
-      // Remove loading indicator
-      const loadingMsg = messageElement.querySelector(".loading-message");
-      if (loadingMsg) {
-        loadingMsg.remove();
-      }
-
-      // Add bot response
-      this.addMessageToDisplay("ASTRO", data.content, false);
-      this.playChatSound();
-    } catch (error) {
-      console.error("Error calling chatbot API:", error);
-
-      // Remove loading indicator
-      const loadingMsg = messageElement.querySelector(".loading-message");
-      if (loadingMsg) {
-        loadingMsg.remove();
-      }
-
-      // Fallback response
-      this.addMessageToDisplay(
-        "ASTRO",
-        "I'm having trouble connecting to my knowledge base. Please make sure the Flask server is running on http://127.0.0.1:5000",
-        false
-      );
-    }
-  }
-
-  addMessageToDisplay(sender, message, isUser, isLoading = false) {
-    const messageElement = document.getElementById("tutorMessage");
-    if (!messageElement) return;
-
-    const msgDiv = document.createElement("div");
-    msgDiv.className = isLoading ? "loading-message" : "";
-    msgDiv.style.cssText = `
-          margin-bottom: 10px;
-          padding: 10px;
-          background: ${
-            isUser ? "rgba(0, 136, 255, 0.2)" : "rgba(0, 255, 255, 0.1)"
-          };
-          border-left: 3px solid ${isUser ? "#0088ff" : "#00ffff"};
-          border-radius: 5px;
-          animation: ${isLoading ? "pulse 1.5s infinite" : "none"};
-        `;
-
-    msgDiv.innerHTML = `
-          <strong style="color: ${
-            isUser ? "#0088ff" : "#00ffff"
-          };">${sender}:</strong><br>
-          <span style="color: #fff; font-size: 14px;">${message}</span>
-        `;
-
-    messageElement.appendChild(msgDiv);
-    messageElement.scrollTop = messageElement.scrollHeight;
   }
 
   hide() {
@@ -589,28 +421,13 @@ class PlanetTutor {
     }
 
     this.tutorElement.classList.remove("active");
-    this.tutorElement.style.opacity = "0";
-    this.tutorElement.style.transform = "translateY(50px)";
-
     setTimeout(() => {
       this.tutorElement.classList.add("hidden");
-      this.tutorElement.style.display = "none";
       this.isActive = false;
-      this.chatMode = false;
       this.currentPlanet = null;
-      this.chatHistory = [];
-
-      // Reset UI
-      const footer = document.getElementById("dialogFooter");
-      if (footer) footer.style.display = "flex";
-
-      const chatContainer = document.getElementById("chatInputContainer");
-      if (chatContainer) chatContainer.style.display = "none";
 
       // Reset button text
-      const nextBtn = document.getElementById("nextMessage");
-      if (nextBtn) nextBtn.textContent = "Next";
-
+      document.getElementById("nextMessage").textContent = "Next";
       console.log("Tutor hidden");
     }, 300);
   }

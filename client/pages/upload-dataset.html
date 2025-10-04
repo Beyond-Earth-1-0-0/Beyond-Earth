@@ -5,7 +5,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="icon" type="image/png" href="../assets/logo.png" />
-
   <title>Kepler Exoplanet Archive - Upload Dataset</title>
   <link rel="stylesheet" href="../css/shared.css">
   <link rel="stylesheet" href="../css/data-viewer.css">
@@ -29,9 +28,7 @@
         </div>
       </div>
       <div class="nav-actions">
-        <a href="exo.html" class="back-link">
-          <i class="bi bi-arrow-left"></i> Back to Space
-        </a>
+        <button class="nav-btn" id="backBtn">Back to Space</button>
       </div>
     </div>
   </nav>
@@ -73,19 +70,10 @@
             </select>
           </div>
 
-          <div class="form-group" style="margin-top:20px;">
-            <label for="datasetSelect" class="filter-label">Choose Action</label>
-            <select id="datasetSelect" class="filter-select">
-              <option disabled selected>Select an option</option>
-              <option value="upload">Kepler</option>
-              <option value="predict">K2</option>
-            </select>
-          </div>
-
           <!-- Drag & Drop Zone -->
           <div class="drop-zone" id="dropZone">
             <i class="bi bi-cloud-arrow-up" style="font-size:2rem;"></i>
-            <p>Drag & Drop your CSV here or click to browse</p>
+            <p id="fileName">Drag & Drop your CSV here or click to browse</p>
             <input type="file" id="fileInput" accept=".csv" hidden />
           </div>
 
