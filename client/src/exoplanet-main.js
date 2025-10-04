@@ -10,10 +10,6 @@ import { loadDefaultData, applyNewData } from "./data management/planet-data-pro
 import { initializeExplorer } from "./initialization.js";
 import { resolveCollisions } from "./utilities/spaceship-physics-utils.js";
 
-import { getPlanetTutor } from "./controllers/planet-tutor-controller.js";
-
-console.log("Planet Tutor module loaded");
-
 const clock = new THREE.Clock();
 
 let spaceship = null;
@@ -138,18 +134,7 @@ async function startScene() {
 	// Initialize controls and interactions
 	try {
 		initControls(spaceship, camera);
-		const planetTutor = getPlanetTutor(); // Get tutor instance here when DOM is ready
-		console.log("Planet Tutor instance obtained:", planetTutor);
-		console.log("Tutor type:", typeof planetTutor);
-		console.log(
-			"Tutor has show method?",
-			planetTutor && typeof planetTutor.show === "function"
-		);
-		console.log(
-			"Tutor has isShowing method?",
-			planetTutor && typeof planetTutor.isShowing === "function"
-		);
-		enablePlanetInteractions(planets, camera, spaceship, planetTutor);
+		enablePlanetInteractions(planets, camera, spaceship);
 		console.log("Enhanced controls and interactions initialized");
 	} catch (error) {
 		console.error("Error initializing controls:", error);
@@ -214,6 +199,21 @@ function setupGlobalEvents() {
 				break;
 		}
 	});
+	const canvas = renderer.domElement;
+	if (canvas) {
+		canvas.addEventListener('pointerdown', (event) => {
+			// Ignore if user clicked on a UI overlay (buttons, HUDs, etc.)
+			if (event.target.closest("#ui-overlay, .hud, #controls-overlay")) return;
+
+			planets.forEach(planet => {
+			if (planet.userData.infoHUD) {
+				const hud = planet.userData.infoHUD;
+				camera.remove(hud);
+				planet.userData.infoHUD = null;
+			}
+			});
+		});
+	}
 
 	// Window resize
 	window.addEventListener('resize', handleWindowResize);
