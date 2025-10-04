@@ -1,0 +1,27 @@
+# Git and editor junk
+.git
+.gitignore
+.vscode
+*.log
+*.tmp
+__pycache__/
+*.pyc
+*.pyo
+
+# Python envs (backend)
+venv/
+.env
+*.egg-info
+*.pytest_cache
+
+# Notebooks and experiments (don’t put in prod image)
+*.ipynb
+*.ipynb_checkpoints/
+
+# Model cache files you don’t want unless explicitly needed
+server/models/__pycache__/
+
+# Docker files (not needed inside the image)
+Dockerfile
+docker-compose.yml
+.dockerignore
