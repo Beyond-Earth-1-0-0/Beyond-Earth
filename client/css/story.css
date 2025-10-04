@@ -54,7 +54,7 @@ section {
 }
 
 #toggleBtn {
-  background: #238636;
+  background: #dc3545;
   border: none;
   color: white;
   padding: 6px 12px;
@@ -65,7 +65,7 @@ section {
 }
 
 #toggleBtn.off {
-  background: #dc3545;
+  background: #238636;
 }
 
 #toggleBtn:hover {
