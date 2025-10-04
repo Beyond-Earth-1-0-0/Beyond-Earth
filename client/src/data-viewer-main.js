@@ -144,10 +144,12 @@ class DataViewerApp {
 
         document.getElementById('sortPeriodBtn')?.addEventListener('click', () => {
             this.tableManager.sortTable('period');
+            this.paginationHandler.updateTable();
         });
 
         document.getElementById('sortTempBtn')?.addEventListener('click', () => {
             this.tableManager.sortTable('temp');
+            this.paginationHandler.updateTable();
         });
 
         document.getElementById('exportCsvBtn')?.addEventListener('click', () => {
