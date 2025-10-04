@@ -1,36 +1,47 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="icon" type="image/png" href="../assets/logo.png" />
-
-  <title>BEYOND EARTH - Exoplanets</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link
-    href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400..900&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap"
-    rel="stylesheet">
-  <link rel="stylesheet" href="../css/shared.css">
-  <link rel="stylesheet" href="../css/exoplanet.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/png" href="../assets/logo.png" />
+<title>BEYOND EARTH - Exoplanets</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400..900&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../css/shared.css">
+<link rel="stylesheet" href="../css/exoplanet.css">
+<link rel="stylesheet" href="../css/mobile-controls.css">
 </head>
-
 <body>
-  <div id="exoplanet-view">
+  <div id="exoplanet-view"></div>
+  <!-- Mobile buttons -->
+  <div id="mobile-buttons">
+    <div id="toggle-info" class="mobile-button">i</div>
+    <div id="center-btn" class="mobile-button">c</div>
+    <div id="toggle-targets" class="mobile-button">t</div>
+  </div>
 
+  <!-- Movement joystick (left) -->
+  <div id="mobile-controls">
+    <div id="joystick-base">
+      <div id="joystick-handle"></div>
+    </div>
+
+    <!-- Rotation joystick (right) -->
+    <div id="look-base">
+      <div id="look-handle"></div>
+    </div>
   </div>
 
   <script type="importmap">
-    {
-      "imports": {
-        "three": "https://unpkg.com/three@0.156.1/build/three.module.js",
-        "three/examples/jsm/": "https://unpkg.com/three@0.156.1/examples/jsm/"
-      }
+  {
+    "imports": {
+      "three": "https://unpkg.com/three@0.156.1/build/three.module.js",
+      "three/examples/jsm/": "https://unpkg.com/three@0.156.1/examples/jsm/"
     }
+  }
   </script>
 
   <script type="module" src="../src/exoplanet-main.js"></script>
 </body>
-
 </html>

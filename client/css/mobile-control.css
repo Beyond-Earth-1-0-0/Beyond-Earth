@@ -1,0 +1,84 @@
+/* Joystick base styles */
+#joystick-base, #look-base {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  border: 2px solid #00ff88;
+  touch-action: none;
+}
+
+#joystick-base { bottom: 20px; left: 20px; position: fixed; }
+#look-base { bottom: 20px; right: 20px; position: fixed; }
+
+#joystick-handle, #look-handle {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(0, 255, 136, 0.7);
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+/* Mobile buttons wrapper */
+#mobile-controls, #mobile-buttons {
+  position: fixed;
+  z-index: 1000;
+  display: none;
+}
+
+#mobile-buttons {
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 40px;
+  z-index: 1001;
+}
+
+.mobile-button {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.1);
+  color: #00ff88;
+  text-align: center;
+  line-height: 50px;
+  font-weight: bold;
+  user-select: none;
+  z-index: 1001;
+}
+
+/* Mobile view */
+@media screen and (max-width: 1024px) {
+  #mobile-controls { display: block; }
+
+  /* Status display top-left */
+  #status-display {
+    top: 10px;
+    left: 10px;
+    right: auto;
+    bottom: auto;
+    position: fixed;
+  }
+
+  /* Hide desktop overlay */
+  #controls-overlay { display: none !important; }
+}
+
+/* Desktop view */
+@media screen and (min-width: 1025px) {
+  #mobile-controls, #mobile-buttons { display: none; }
+
+  #status-display {
+    bottom: 20px;
+    left: 20px;
+    top: auto;
+    right: auto;
+    position: fixed;
+  }
+
+  #controls-overlay { display: block !important; }
+}
