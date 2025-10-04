@@ -1,0 +1,782 @@
+/* Exoplanet Cockpit Styles */
+
+/* Override body for immersive cockpit experience */
+body {
+    font-family: 'Orbitron', 'Courier New', monospace;
+    overflow: hidden !important;
+    cursor: none;
+}
+
+/* Cockpit container */
+#exoplanet-view {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden !important;
+    font-family: 'Orbitron', 'Courier New', monospace;
+    background: #000;
+    color: #fff;
+}
+
+/* Canvas specific to exoplanet view */
+#exoplanet-view canvas {
+    display: block;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw !important;
+    height: 100vh !important;
+    cursor: crosshair;
+    z-index: 1;
+}
+
+#exoplanet-view canvas:hover {
+    cursor: crosshair;
+}
+
+/* Cockpit HUD */
+.cockpit-hud {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    background: linear-gradient(145deg,
+            rgba(0, 74, 90, 0.9),
+            rgba(5, 37, 45, 0.95));
+    border: 2px solid rgba(0, 255, 255, 0.4);
+    border-radius: 12px;
+    padding: 20px;
+    color: #00ffff;
+    font-family: 'Orbitron', monospace;
+    backdrop-filter: blur(15px);
+    z-index: 998;
+    max-width: 320px;
+    box-shadow:
+        0 0 25px rgba(0, 255, 255, 0.3),
+        inset 0 0 15px rgba(0, 255, 255, 0.1);
+    transition: all 0.3s ease;
+}
+
+.cockpit-hud h3 {
+    color: #00ff80;
+    margin-bottom: 12px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-size: 16px;
+    text-shadow: 0 0 10px rgba(0, 255, 128, 0.6);
+    border-bottom: 1px solid rgba(0, 255, 255, 0.3);
+    padding-bottom: 8px;
+}
+
+.cockpit-hud p {
+    font-size: 12px;
+    line-height: 1.5;
+    margin: 4px 0;
+    color: #cccccc;
+}
+
+.cockpit-hud strong {
+    color: #ffaa00;
+    text-shadow: 0 0 5px rgba(255, 170, 0, 0.6);
+}
+
+/* UI Toggle Button - Enhanced Futuristic Style */
+#uiToggle {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    width: 60px;
+    height: 60px;
+    border: none;
+    background: linear-gradient(145deg, #0a4a5a, #1a6a7a);
+    color: #00ffff;
+    font-size: 24px;
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow:
+        0 0 20px rgba(0, 255, 255, 0.3),
+        inset 0 2px 5px rgba(255, 255, 255, 0.1),
+        inset 0 -2px 5px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
+    z-index: 1001;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(10px);
+    border: 2px solid rgba(0, 255, 255, 0.2);
+}
+
+#uiToggle:hover {
+    background: linear-gradient(145deg, #1a6a7a, #2a8a9a);
+    box-shadow:
+        0 0 30px rgba(0, 255, 255, 0.5),
+        inset 0 2px 8px rgba(255, 255, 255, 0.2);
+    transform: scale(1.05);
+    color: #ffffff;
+}
+
+#uiToggle:active {
+    transform: scale(0.95);
+    box-shadow:
+        0 0 15px rgba(0, 255, 255, 0.4),
+        inset 0 3px 8px rgba(0, 0, 0, 0.4);
+}
+
+/* Gear icon animation */
+.gear-icon {
+    animation: rotate 3s linear infinite;
+}
+
+@keyframes rotate {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* UI Container - Slide Panel */
+#uiContainer {
+    position: fixed;
+    top: 0;
+    right: -350px;
+    width: 350px;
+    height: 100vh;
+    background: linear-gradient(180deg,
+            rgba(10, 74, 90, 0.95) 0%,
+            rgba(5, 37, 45, 0.98) 100%);
+    backdrop-filter: blur(15px);
+    border-left: 2px solid rgba(0, 255, 255, 0.3);
+    padding: 20px;
+    transition: right 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    z-index: 999;
+    overflow-y: auto;
+    box-shadow: -10px 0 30px rgba(0, 0, 0, 0.5);
+}
+
+#uiContainer.active {
+    right: 0;
+}
+
+#uiContainer.collapsed {
+    right: -350px;
+}
+
+/* Scrollbar styling for UI container */
+#uiContainer::-webkit-scrollbar {
+    width: 8px;
+}
+
+#uiContainer::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
+}
+
+#uiContainer::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, #00ffff, #0080ff);
+    border-radius: 4px;
+}
+
+/* Control Buttons */
+.control-button,
+#modeToggleButton,
+#uploadButton,
+button {
+    width: 100%;
+    padding: 15px;
+    margin: 10px 0;
+    border: none;
+    background: linear-gradient(145deg,
+            rgba(0, 255, 255, 0.1),
+            rgba(0, 128, 255, 0.1));
+    color: #00ffff;
+    font-family: 'Orbitron', monospace;
+    font-size: 14px;
+    font-weight: bold;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 1px solid rgba(0, 255, 255, 0.2);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.control-button:hover,
+#modeToggleButton:hover,
+#uploadButton:hover,
+button:hover {
+    background: linear-gradient(145deg,
+            rgba(0, 255, 255, 0.2),
+            rgba(0, 128, 255, 0.2));
+    border: 1px solid rgba(0, 255, 255, 0.5);
+    box-shadow: 0 5px 15px rgba(0, 255, 255, 0.3);
+    transform: translateY(-2px);
+}
+
+.control-button:active,
+#modeToggleButton:active,
+#uploadButton:active,
+button:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 8px rgba(0, 255, 255, 0.2);
+}
+
+/* Planet Info Panel */
+#planet-info {
+    background: linear-gradient(145deg,
+            rgba(0, 0, 0, 0.9),
+            rgba(10, 74, 90, 0.9));
+    border: 2px solid rgba(0, 255, 255, 0.4);
+    border-radius: 12px;
+    padding: 20px;
+    margin-top: 20px;
+    color: #ffffff;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(10px);
+}
+
+.planet-info-content h2 {
+    color: #00ffff;
+    font-size: 24px;
+    margin-bottom: 10px;
+    text-align: center;
+    text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+    border-bottom: 2px solid rgba(0, 255, 255, 0.3);
+    padding-bottom: 10px;
+}
+
+.planet-header h2 {
+    color: #00ffff;
+    font-size: 24px;
+    margin-bottom: 10px;
+    text-align: center;
+    text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+    border-bottom: 2px solid rgba(0, 255, 255, 0.3);
+    padding-bottom: 10px;
+}
+
+.planet-type {
+    color: #80ff80;
+    text-align: center;
+    font-style: italic;
+    margin-bottom: 20px;
+    font-size: 16px;
+}
+
+.planet-section {
+    margin: 15px 0;
+    padding: 10px;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 6px;
+    border-left: 3px solid rgba(0, 255, 255, 0.5);
+}
+
+.planet-section h3 {
+    color: #00ff80;
+    font-size: 16px;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.planet-section p {
+    color: #cccccc;
+    font-size: 13px;
+    line-height: 1.4;
+    margin: 5px 0;
+}
+
+.planet-section b {
+    color: #80ffff;
+}
+
+.planet-actions {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.close-button {
+    background: linear-gradient(145deg, #ff4444, #cc2222) !important;
+    color: white !important;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-family: 'Orbitron', monospace;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    width: auto !important;
+    margin: 0 !important;
+}
+
+.close-button:hover {
+    background: linear-gradient(145deg, #ff6666, #ff2222) !important;
+    box-shadow: 0 5px 15px rgba(255, 68, 68, 0.4) !important;
+    transform: translateY(-2px) !important;
+}
+
+/* Section Headers */
+.ui-section-header {
+    color: #00ffff;
+    font-size: 18px;
+    font-weight: bold;
+    margin: 30px 0 15px 0;
+    padding-bottom: 8px;
+    border-bottom: 1px solid rgba(0, 255, 255, 0.3);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.ui-section-header:first-child {
+    margin-top: 80px;
+}
+
+/* Status indicators */
+.status-indicator {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    background: rgba(0, 0, 0, 0.8);
+    border: 1px solid #00ffff;
+    border-radius: 5px;
+    padding: 10px;
+    font-size: 12px;
+    color: #00ffff;
+    font-family: 'Orbitron', monospace;
+    z-index: 1000;
+}
+
+/* Crosshair for targeting */
+.crosshair {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    width: 20px;
+    height: 20px;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    z-index: 999;
+}
+
+.crosshair::before,
+.crosshair::after {
+    content: '';
+    position: absolute;
+    background: rgba(0, 255, 255, 0.8);
+    box-shadow: 0 0 5px rgba(0, 255, 255, 0.6);
+}
+
+.crosshair::before {
+    top: 50%;
+    left: 2px;
+    right: 2px;
+    height: 1px;
+    transform: translateY(-50%);
+}
+
+.crosshair::after {
+    left: 50%;
+    top: 2px;
+    bottom: 2px;
+    width: 1px;
+    transform: translateX(-50%);
+}
+
+/* Loading screen specific to exoplanet view */
+.exoplanet-loading {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: radial-gradient(circle, #001122 0%, #000000 100%);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 10000;
+    color: #00ffff;
+    font-family: 'Orbitron', monospace;
+}
+
+.exoplanet-loading .loading-text {
+    font-size: 24px;
+    margin-bottom: 20px;
+    text-shadow: 0 0 10px rgba(0, 255, 255, 0.8);
+    animation: pulse 2s infinite;
+}
+
+/* Instructions panel (if needed) */
+#instructions {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    background: rgba(0, 20, 40, 0.9);
+    color: #00ffff;
+    padding: 20px;
+    border-radius: 10px;
+    font-family: 'Orbitron', monospace;
+    font-size: 13px;
+    z-index: 1000;
+    max-width: 320px;
+    border: 2px solid #00ffff;
+    box-shadow:
+        0 0 20px rgba(0, 255, 255, 0.3),
+        inset 0 0 10px rgba(0, 255, 255, 0.1);
+    backdrop-filter: blur(5px);
+    transition: all 0.3s ease;
+}
+
+#instructions h3 {
+    margin: 0 0 12px 0;
+    color: #00ffff;
+    text-shadow: 0 0 10px rgba(0, 255, 255, 0.8);
+    font-size: 16px;
+}
+
+#instructions strong {
+    color: #ffaa00;
+    text-shadow: 0 0 5px rgba(255, 170, 0, 0.6);
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .cockpit-hud {
+        font-size: 11px;
+        max-width: 280px;
+        padding: 15px;
+        top: 10px;
+        left: 10px;
+    }
+
+    #uiContainer {
+        width: 100vw;
+        right: -100vw;
+        padding: 15px;
+    }
+
+    #uiContainer.active {
+        right: 0;
+    }
+
+    #uiToggle {
+        right: 15px;
+        top: 15px;
+        width: 50px;
+        height: 50px;
+        font-size: 20px;
+    }
+
+    .ui-section-header:first-child {
+        margin-top: 20px;
+    }
+
+    #instructions {
+        font-size: 11px;
+        max-width: 280px;
+        padding: 15px;
+        top: 10px;
+        left: 10px;
+    }
+}
+
+.crosshair {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 40px;
+    height: 40px;
+    pointer-events: none;
+    z-index: 999;
+}
+
+.crosshair::before,
+.crosshair::after {
+    content: '';
+    position: absolute;
+    background: #00ffff;
+    box-shadow: 0 0 15px #00ffff, 0 0 30px #00ffff;
+    animation: crosshairPulse 2s ease-in-out infinite;
+}
+
+.crosshair::before {
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 2px;
+    transform: translateY(-50%);
+}
+
+.crosshair::after {
+    left: 50%;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    transform: translateX(-50%);
+}
+
+@keyframes crosshairPulse {
+
+    0%,
+    100% {
+        opacity: 0.6;
+    }
+
+    50% {
+        opacity: 1;
+    }
+}
+
+#status-display {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    background: linear-gradient(145deg, rgba(0, 20, 40, 0.95), rgba(0, 40, 80, 0.95));
+    color: #00ffff;
+    padding: 15px 20px;
+    border-radius: 12px;
+    border: 2px solid #00ffff;
+    font-family: 'Orbitron', monospace;
+    font-size: 12px;
+    z-index: 1000;
+    box-shadow: 0 0 25px rgba(0, 255, 255, 0.3);
+    backdrop-filter: blur(10px);
+    min-width: 200px;
+}
+
+.status-header {
+    color: #00ff88;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 8px;
+    font-size: 14px;
+    letter-spacing: 1px;
+    border-bottom: 1px solid rgba(0, 255, 255, 0.3);
+    padding-bottom: 5px;
+}
+
+.status-line {
+    margin: 3px 0;
+    display: flex;
+    justify-content: space-between;
+}
+
+.status-line span {
+    color: #ffaa00;
+    font-weight: bold;
+}
+
+#controls-overlay {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    background: linear-gradient(145deg, rgba(0, 20, 40, 0.9), rgba(0, 40, 80, 0.9));
+    color: #00ffff;
+    padding: 20px;
+    border-radius: 12px;
+    border: 2px solid #00ffff;
+    font-family: 'Orbitron', monospace;
+    font-size: 11px;
+    z-index: 998;
+    max-width: 280px;
+    box-shadow: 0 0 25px rgba(0, 255, 255, 0.3);
+    backdrop-filter: blur(10px);
+    transition: opacity 0.5s ease;
+}
+
+#controls-overlay.fade-out {
+    opacity: 0.3;
+}
+
+#controls-overlay:hover {
+    opacity: 1 !important;
+}
+
+.controls-header {
+    color: #00ff88;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 15px;
+    font-size: 14px;
+    letter-spacing: 1px;
+    border-bottom: 1px solid rgba(0, 255, 255, 0.3);
+    padding-bottom: 8px;
+}
+
+.control-group {
+    margin-bottom: 15px;
+}
+
+.control-category {
+    color: #ffaa00;
+    font-weight: bold;
+    margin-bottom: 5px;
+    font-size: 12px;
+}
+
+.control-item {
+    margin: 2px 0;
+    padding-left: 10px;
+    display: flex;
+    align-items: center;
+}
+
+kbd {
+    background: linear-gradient(145deg, #00ffff, #0080ff);
+    color: #000;
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-family: 'Orbitron', monospace;
+    font-size: 10px;
+    font-weight: bold;
+    margin-right: 8px;
+    min-width: 60px;
+    text-align: center;
+    box-shadow: 0 0 5px rgba(0, 255, 255, 0.3);
+}
+
+#settings-toggle {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    width: 50px;
+    height: 50px;
+    border: none;
+    background: linear-gradient(145deg, #00ffff, #0080ff);
+    color: #000;
+    font-size: 20px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
+    z-index: 1001;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#settings-toggle:hover {
+    transform: rotate(180deg) scale(1.1);
+    box-shadow: 0 0 30px rgba(0, 255, 255, 0.6);
+}
+
+.settings-panel {
+    position: fixed;
+    top: 80px;
+    right: 20px;
+    background: linear-gradient(145deg, rgba(0, 20, 40, 0.95), rgba(0, 40, 80, 0.95));
+    color: #00ffff;
+    padding: 20px;
+    border-radius: 12px;
+    border: 2px solid #00ffff;
+    font-family: 'Orbitron', monospace;
+    z-index: 1000;
+    box-shadow: 0 0 25px rgba(0, 255, 255, 0.3);
+    backdrop-filter: blur(10px);
+    min-width: 200px;
+    transition: all 0.3s ease;
+}
+
+.settings-panel.hidden {
+    opacity: 0;
+    transform: translateX(300px);
+    pointer-events: none;
+}
+
+.settings-header {
+    color: #00ff88;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 15px;
+    font-size: 14px;
+    letter-spacing: 1px;
+    border-bottom: 1px solid rgba(0, 255, 255, 0.3);
+    padding-bottom: 8px;
+}
+
+.setting-btn {
+    width: 100%;
+    padding: 10px;
+    margin: 8px 0;
+    border: none;
+    background: linear-gradient(145deg, rgba(0, 255, 255, 0.1), rgba(0, 128, 255, 0.1));
+    color: #00ffff;
+    font-family: 'Orbitron', monospace;
+    font-size: 12px;
+    font-weight: bold;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 1px solid rgba(0, 255, 255, 0.2);
+    text-transform: uppercase;
+}
+
+.setting-btn:hover {
+    background: linear-gradient(145deg, rgba(0, 255, 255, 0.2), rgba(0, 128, 255, 0.2));
+    box-shadow: 0 5px 15px rgba(0, 255, 255, 0.3);
+    transform: translateY(-2px);
+}
+
+#audio-indicator {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: rgba(0, 100, 0, 0.8);
+    color: #00ff00;
+    padding: 8px 15px;
+    border-radius: 20px;
+    font-family: 'Orbitron', monospace;
+    font-size: 12px;
+    font-weight: bold;
+    z-index: 1000;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.3s ease;
+    border: 1px solid #00ff00;
+    box-shadow: 0 0 15px rgba(0, 255, 0, 0.3);
+}
+
+#audio-indicator.active {
+    opacity: 1;
+    transform: translateY(0);
+    animation: audioIndicatorPulse 0.5s ease-in-out;
+}
+
+@keyframes audioIndicatorPulse {
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.1);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+@media (max-width: 768px) {
+
+    #controls-overlay,
+    #status-display {
+        font-size: 10px;
+        padding: 12px;
+        max-width: 250px;
+    }
+
+    #settings-toggle {
+        width: 45px;
+        height: 45px;
+        font-size: 18px;
+    }
+
+    .settings-panel {
+        right: 10px;
+        padding: 15px;
+        min-width: 180px;
+    }
+}

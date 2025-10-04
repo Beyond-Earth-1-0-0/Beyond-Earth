@@ -1,0 +1,115 @@
+/* Shared Base Styles */
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&display=swap");
+
+/* Global Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Base Body Styles */
+body {
+    font-family: "Inter", sans-serif;
+    background: #000;
+    color: white;
+}
+
+/* Common Utility Classes */
+.hidden {
+    display: none !important;
+}
+
+.float {
+    animation: float 3s ease-in-out infinite;
+}
+
+.twinkle {
+    animation: twinkle 2s ease-in-out infinite;
+}
+
+/* Common Animations */
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes pulse {
+
+    0%,
+    100% {
+        opacity: 0.6;
+    }
+
+    50% {
+        opacity: 1;
+    }
+}
+
+@keyframes float {
+
+    0%,
+    100% {
+        transform: translateY(0px);
+    }
+
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+@keyframes twinkle {
+
+    0%,
+    100% {
+        opacity: 0.3;
+    }
+
+    50% {
+        opacity: 1;
+    }
+}
+
+/* Common Loading Styles */
+.loading-spinner {
+    width: 30px;
+    height: 30px;
+    border: 2px solid rgba(99, 102, 241, 0.3);
+    border-top: 2px solid #6366f1;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 20px;
+}
+
+/* Scrollbar Hiding */
+::-webkit-scrollbar {
+    display: none;
+}
+
+html {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+/* Common Text Selection Disable */
+* {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+/* Common Responsive Breakpoints */
+@media (max-width: 768px) {
+    /* Mobile adjustments that apply to all pages */
+}
+
+@media (max-width: 480px) {
+    /* Small mobile adjustments */
+}

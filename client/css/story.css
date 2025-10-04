@@ -1,0 +1,73 @@
+body {
+  margin: 0px;
+  box-sizing: border-box;
+}
+
+section {
+  position: relative;
+  height: 730vh;
+  background-size: cover;
+  background-attachment: fixed;
+}
+
+.card {
+  position: absolute;
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 0 30px rgba(0, 0, 0, 0.8);
+  width: 400px;
+  transition: all 0.3s ease;
+  font-size: 22px;
+  color: white;
+  padding: 10px 20px;
+}
+
+.header {
+  position: absolute;
+  text-align: center;
+  justify-content: center;
+  top: 300px;
+  flex-wrap: wrap;
+  color: white;
+  width: 100%;
+  height: 100vh;
+  gap: 10px;
+}
+
+/* Control bar */
+#ambientControl {
+  position: fixed;
+  bottom: 16px;
+  left: 16px;
+  display: none;
+  align-items: center;
+  gap: 10px;
+  background: rgba(0, 0, 0, 0.6);
+  border-radius: 12px;
+  padding: 8px 14px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  font-size: 14px;
+  user-select: none;
+  color: white;
+  z-index: 1000;
+}
+
+#toggleBtn {
+  background: #238636;
+  border: none;
+  color: white;
+  padding: 6px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 13px;
+  transition: background 0.2s;
+}
+
+#toggleBtn.off {
+  background: #dc3545;
+}
+
+#toggleBtn:hover {
+  opacity: 0.9;
+}

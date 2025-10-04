@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" type="image/png" href="../assets/logo.png" />
+  <title>Cosmic Gateway - Journey from the Stars</title>
+  <link rel="stylesheet" href="../css/shared.css" />
+  <link rel="stylesheet" href="../css/cosmic-journey.css" />
+  <link rel="stylesheet" href="../css/story.css" />
+
+</head>
+
+<body>
+  <div id="cosmic-container">
+    <canvas id="cosmic-canvas"></canvas>
+  </div>
+
+  <div id="loading-screen">
+    <div class="loading-content">
+      <img src="../assets/logo.png" alt="Cosmic Gateway Logo" class="loading-logo" />
+      <div class="loading-spinner"></div>
+      <h2>Preparing Cosmic Journey...</h2>
+      <div class="loading-bar">
+        <div class="loading-progress"></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="ui-overlay">
+    <div class="progress-indicator">
+      <div class="progress-bar">
+        <div class="progress-fill"></div>
+      </div>
+      <span class="progress-text">Deep Space</span>
+    </div>
+  </div>
+  <div class="thematic-text">
+    <h1>Your journey begins at the edge of the cosmos.</h1>
+    <p>Travel through nebulae and stardust to find your way back home.</p>
+  </div>
+
+  <div class="scroll-prompt">
+    <span>Scroll to go home</span>
+  </div>
+  </div>
+  <!-- Astronaut-perspective transition overlay -->
+  <div id="transition-overlay" class="hidden">
+    <canvas id="transition-canvas"></canvas>
+    <div class="transition-hud">
+      <div class="hud-ring"></div>
+      <div class="hud-text">Preparing exoplanetary system...</div>
+    </div>
+  </div>
+  <section>
+    <!-- Ambient background audio -->
+    <audio id="bgAudio"
+      src="https://science.nasa.gov/specials/apps/travel-bureau/assets/audio/51-pegasi-b/2443_majestic.mp3"
+      preload="auto" loop playsinline webkit-playsinline></audio>
+
+    <!-- Control bar -->
+    <div id="ambientControl">
+      <span>🎵 Ambient Track</span>
+      <button id="toggleBtn" class="off">Enable</button>
+    </div>
+    <div>
+      <img src="../assets/astro.gif" height=400 width="400" style="position: absolute; right:0px">
+    </div>
+
+    <!-- Cards with their own audio (data-audio attribute) -->
+    <div class="card" style="top:750px; right: 100px;"
+      data-audio="https://science.nasa.gov/specials/apps/travel-bureau/assets/audio/51-pegasi-b/2366_51PegasusB_Scene1_take2_1.mp3 ">
+      <p>The first exoplanets were discovered in the early 1990s orbiting pulsars. Nods to these early discoveries
+        are scattered across the table.</p>
+    </div>
+
+    <div class="card" style="top:1580px; left: 100px;"
+      data-audio="https://science.nasa.gov/specials/apps/travel-bureau/assets/audio/51-pegasi-b/2367_51PegasusB_Scene2_take2_1.mp3 ">
+      <p>In 1995, 51 Pegasi b was the first exoplanet confirmed around a Sun-like star, igniting a new age of
+        discovery.</p>
+    </div>
+
+    <div class="card" style="top:2380px; right: 100px;"
+      data-audio="https://science.nasa.gov/specials/apps/travel-bureau/assets/audio/51-pegasi-b/2369_51PegasusB_Scene3_take3_1.mp3 ">
+      <p>This "hot Jupiter" is bigger than the biggest planet in our solar system, and orbits its star so tightly
+        that its "year" is only four days long. The discovery opened the floodgates; today it is one of more
+        than 5,000 confirmed exoplanets among the billions we suspect are out there.</p>
+    </div>
+
+    <div class="card" style="top:3290px; left: 100px;"
+      data-audio="https://science.nasa.gov/specials/apps/travel-bureau/assets/audio/51-pegasi-b/2371_51PegasusB_Scene4_take3_1.mp3">
+      <p>Pulsars are the collapsed cores of exploded massive stars. They spin rapidly and "pulse" with radiation.
+      </p>
+    </div>
+
+    <div class="card" style="top:4090px; right: 100px;"
+      data-audio="https://science.nasa.gov/specials/apps/travel-bureau/assets/audio/51-pegasi-b/2372_51PegasusB_Scene5_take1_1.mp3 ">
+      <p>This traveler is on quite the adventure! Notice one Travel Bureau destination? This souvenir is from
+        Kepler-16b!</p>
+    </div>
+
+    <div class="card" style="top:4890px; left: 100px;"
+      data-audio="https://science.nasa.gov/specials/apps/travel-bureau/assets/audio/51-pegasi-b/2373_51PegasusB_Scene6_take1_1.mp3 ">
+      <p>We imagine that even as our technology improves to allow galactic grand voyages, people will still want
+        mementos and to share their travels with others.</p>
+    </div>
+  </section>
+
+  <!-- Egyptian Desert Scene Overlay -->
+  <div id="desert-overlay" class="desert-overlay hidden">
+    <div class="desert-container">
+      <canvas id="desert-canvas"></canvas>
+      <div class="desert-atmosphere">
+        <div class="sand-particles"></div>
+        <div class="heat-shimmer"></div>
+        <div class="wind-lines"></div>
+        <div class="desert-mirage"></div>
+        <div class="desert-sound-waves"></div>
+      </div>
+      <div class="desert-details">
+        <h3 id="desert-location-name">Far Desert, Egypt</h3>
+        <p id="desert-location-description">
+          Ancient sands whisper secrets of pharaohs and cosmic mysteries...
+        </p>
+        <div class="desert-stats">
+          <div class="stat">
+            <span class="stat-label">Temperature</span>
+            <span class="stat-value" id="desert-temp">42°C</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Wind</span>
+            <span class="stat-value" id="desert-wind">12 km/h</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Visibility</span>
+            <span class="stat-value" id="desert-visibility">Excellent</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Import map for ESM -->
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://unpkg.com/three@0.156.1/build/three.module.js",
+        "three/examples/jsm/": "https://unpkg.com/three@0.156.1/examples/jsm/"
+      }
+    }
+  </script>
+
+  <!-- App entry -->
+  <script type="module" src="../src/app.js"></script>
+  <script type="module" src="../src/story.js"></script>
+</body>
+
+</html>

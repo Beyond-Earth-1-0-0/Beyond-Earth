@@ -1,0 +1,144 @@
+/* Drag & Drop Zone */
+.drop-zone {
+  border: 2px dashed var(--accent-primary);
+  border-radius: 12px;
+  padding: 2rem;
+  margin: 1rem 0;
+  text-align: center;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: background 0.3s, border-color 0.3s;
+}
+
+.drop-zone:hover {
+  background: rgba(0, 169, 224, 0.05);
+}
+
+.drop-zone.dragover {
+  background: rgba(0, 169, 224, 0.15);
+  border-color: var(--accent-secondary);
+  color: var(--text-primary);
+}
+
+/* Upload Modal */
+#uploadModal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 9999;
+}
+
+#uploadModal .modal-content {
+  background: #121212;
+  color: #fff;
+  padding: 30px;
+  border-radius: 16px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+  max-width: 500px;
+  width: 90%;
+  text-align: center;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+/* Layout */
+.main-layout {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  min-height: 60vh;
+  padding: 2rem;
+}
+
+/* Upload Panel */
+.upload-panel {
+  width: 100%;
+  max-width: 100%;
+  padding: 2rem;
+  border-radius: 16px;
+  background: rgba(5, 68, 90, 0.15);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+/* Fade-in Animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Prediction status font colors */
+.status-confirmed {
+  color: #4caf50 !important;
+  font-weight: bold;
+}
+
+.status-candidate {
+  color: #ff9800 !important;
+  font-weight: bold;
+}
+
+.status-false {
+  color: #f44336 !important;
+  font-weight: bold;
+}
+
+.status-unknown {
+  color: #9e9e9e !important;
+  font-style: italic;
+}
+
+/* Table wrapper for responsive scroll */
+.table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  border-radius: 12px;
+  background: rgba(0, 0, 0, 0.1);
+  padding: 0.5rem;
+}
+
+/* Data table */
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 900px;
+  /* ensures wide tables can scroll */
+  font-size: 0.9rem;
+  color: var(--text-primary);
+}
+
+/* Table head */
+.data-table thead {
+  background: rgba(255, 255, 255, 0.05);
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+
+/* Table cells */
+.data-table th,
+.data-table td {
+  padding: 8px 12px;
+  text-align: left;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  white-space: nowrap;
+  /* prevent text wrapping */
+}
+
+/* Add zebra striping for readability */
+.data-table tbody tr:nth-child(odd) {
+  background: rgba(255, 255, 255, 0.02);
+}

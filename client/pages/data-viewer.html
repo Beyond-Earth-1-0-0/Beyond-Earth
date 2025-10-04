@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="../assets/logo.png" />
+
+    <title>Kepler Exoplanet Archive - Research Platform</title>
+    <link rel="stylesheet" href="../css/shared.css">
+    <link rel="stylesheet" href="../css/data-viewer.css">
+</head>
+
+<body>
+    <div class="space-background"></div>
+    <canvas class="stars" id="stars"></canvas>
+
+    <nav class="top-nav">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <div class="nav-logo">K</div>
+                <div>
+                    <div class="nav-title">Kepler Exoplanet Archive</div>
+                    <div class="nav-subtitle">NASA Research Platform v2.4</div>
+                </div>
+            </div>
+            <div class="nav-actions">
+                <button class="nav-btn" id="backBtn">Back to space</button>
+                <button class="nav-btn" id="docBtn">Documentation</button>
+                <button class="nav-btn" id="apiBtn">API Access</button>
+                <button class="nav-btn primary" id="exportBtn">Export Data</button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="dashboard-header">
+            <div class="header-top">
+                <div class="header-info">
+                    <h1>Confirmed Exoplanet Database</h1>
+                    <div class="header-meta">
+                        Mission Timeline: <span>2009-2018</span> |
+                        Last Updated: <span id="lastUpdate">2025-09-29</span> |
+                        Data Version: <span>DR25</span>
+                    </div>
+                </div>
+                <div class="mission-info">
+                    <div class="mission-badge">KEPLER MISSION</div>
+                    <div class="status-indicator">
+                        <div class="status-dot"></div>
+                        Live Data
+                    </div>
+                </div>
+            </div>
+            <div class="stats-overview">
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <div class="stat-label">Random Sample of Planets</div>
+                        <div class="stat-icon">P</div>
+                    </div>
+                    <div class="stat-value" id="totalPlanets">0</div>
+                    <div class="stat-change neutral">Confirmed Detections</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <div class="stat-label">Avg Confidence</div>
+                        <div class="stat-icon">C</div>
+                    </div>
+                    <div class="stat-value" id="avgConfidence">0%</div>
+                    <div class="stat-change">High Reliability</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <div class="stat-label">Temp Range</div>
+                        <div class="stat-icon">T</div>
+                    </div>
+                    <div class="stat-value" id="tempRange">0-0</div>
+                    <div class="stat-change neutral">Kelvin</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <div class="stat-label">Orbital Range</div>
+                        <div class="stat-icon">O</div>
+                    </div>
+                    <div class="stat-value" id="orbitRange">0-0</div>
+                    <div class="stat-change neutral">Days</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="main-layout">
+            <div class="sidebar">
+                <div class="panel">
+                    <div class="panel-header">
+                        <div class="panel-title">Key Metrics</div>
+                    </div>
+                    <div class="quick-stats">
+                        <div class="quick-stat-item">
+                            <div class="quick-stat-label">Mean Period</div>
+                            <div class="quick-stat-value" id="meanPeriod">0 d</div>
+                        </div>
+                        <div class="quick-stat-item">
+                            <div class="quick-stat-label">Mean Temp</div>
+                            <div class="quick-stat-value" id="meanTemp">0 K</div>
+                        </div>
+                        <div class="quick-stat-item">
+                            <div class="quick-stat-label">Mean Depth</div>
+                            <div class="quick-stat-value" id="meanDepth">0 ppm</div>
+                        </div>
+                        <div class="quick-stat-item">
+                            <div class="quick-stat-label">Mean Duration</div>
+                            <div class="quick-stat-value" id="meanDuration">0 hrs</div>
+                        </div>
+                        <div class="quick-stat-item">
+                            <div class="quick-stat-label">σ Period</div>
+                            <div class="quick-stat-value" id="sigmaPeriod">0 d</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel filters-panel">
+                    <div class="panel-header">
+                        <div class="panel-title">Data Filters</div>
+                    </div>
+                    <div class="filter-group">
+                        <div class="filter-label">Disposition</div>
+                        <select class="filter-select" id="dispositionFilter">
+                            <option>All Status</option>
+                            <option>Confirmed</option>
+                            <option>Candidate</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <div class="filter-label">Temperature Range</div>
+                        <select class="filter-select" id="tempFilter">
+                            <option>All Temperatures</option>
+                            <option>&lt; 700 K (Cool)</option>
+                            <option>700 - 1000 K (Warm)</option>
+                            <option>&gt; 1000 K (Hot)</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <div class="filter-label">Period Range</div>
+                        <select class="filter-select" id="periodFilter">
+                            <option>All Periods</option>
+                            <option>&lt; 5 days</option>
+                            <option>5 - 20 days</option>
+                            <option>&gt; 20 days</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="charts-grid">
+                <div class="chart-panel">
+                    <div class="chart-header">
+                        <div class="chart-title">Orbital Period Distribution</div>
+                        <div class="chart-controls">
+                            <button class="chart-btn active" id="periodBarBtn">Bar</button>
+                            <button class="chart-btn" id="periodLineBtn">Line</button>
+                            <button class="chart-btn" id="periodExportBtn">Export</button>
+                        </div>
+                    </div>
+                    <div class="chart-wrapper">
+                        <canvas id="periodChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="data-grid">
+            <div class="chart-panel">
+                <div class="chart-header">
+                    <div class="chart-title">Temperature vs Orbital Period</div>
+                    <div class="chart-controls">
+                        <button class="chart-btn active" id="scatterBtn">Scatter</button>
+                        <button class="chart-btn" id="regressionBtn">Regression</button>
+                    </div>
+                </div>
+                <div class="chart-wrapper">
+                    <canvas id="scatterChart"></canvas>
+                </div>
+            </div>
+
+            <div class="chart-panel">
+                <div class="chart-header">
+                    <div class="chart-title">Transit Depth Time Series</div>
+                    <div class="chart-controls">
+                        <button class="chart-btn active" id="depthLineBtn">Line</button>
+                        <button class="chart-btn" id="depthAreaBtn">Area</button>
+                    </div>
+                </div>
+                <div class="chart-wrapper">
+                    <canvas id="depthChart"></canvas>
+                </div>
+            </div>
+            <!-- Add these chart panels to your data-grid section -->
+
+            <!-- Temperature Histogram Chart -->
+            <div class="chart-panel">
+                <div class="chart-header">
+                    <div class="chart-title">Temperature Distribution Histogram</div>
+                    <div class="chart-controls">
+                        <button class="chart-btn active" id="histogramBarBtn">Bar</button>
+                        <button class="chart-btn" id="histogramLineBtn">Line</button>
+                    </div>
+                </div>
+                <div class="chart-wrapper">
+                    <canvas id="histogramChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Disposition Pie/Doughnut Chart -->
+            <div class="chart-panel">
+                <div class="chart-header">
+                    <div class="chart-title">Status Distribution</div>
+                    <div class="chart-controls">
+                        <button class="chart-btn active" id="doughnutBtn">Doughnut</button>
+                        <button class="chart-btn" id="pieBtn">Pie</button>
+                    </div>
+                </div>
+                <div class="chart-wrapper">
+                    <canvas id="dispositionChart"></canvas>
+                </div>
+            </div>
+            <div class="table-section">
+                <div class="table-header">
+                    <div class="table-title">Detailed Observational Data</div>
+                    <div class="table-actions">
+                        <input type="text" class="search-box" placeholder="Search planets..." id="searchBox">
+                        <button class="action-btn" id="sortPeriodBtn">Sort Period</button>
+                        <button class="action-btn" id="sortTempBtn">Sort Temp</button>
+                        <button class="action-btn" id="exportCsvBtn">Export CSV</button>
+                    </div>
+                </div>
+                <div style="overflow-x: auto;">
+                    <table class="data-table" id="dataTable">
+                        <thead>
+                            <tr>
+                                <th data-sort="name">Planet Designation</th>
+                                <th data-sort="status">Status</th>
+                                <th data-sort="confidence">Confidence</th>
+                                <th data-sort="period">Period (d)</th>
+                                <th data-sort="duration">Duration (h)</th>
+                                <th data-sort="depth">Depth (ppm)</th>
+                                <th data-sort="temp">Temp (K)</th>
+                                <th data-sort="impact">Impact Param</th>
+                                <th>Time₀ (BJD)</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tableBody">
+                            <tr>
+                                <td colspan="10" style="text-align: center; padding: 40px;">Loading...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+
+        <footer class="footer">
+            <div class="footer-links">
+                <a href="#" class="footer-link">About</a>
+                <a href="#" class="footer-link">Documentation</a>
+                <a href="#" class="footer-link">API Reference</a>
+                <a href="#" class="footer-link">Citations</a>
+                <a href="#" class="footer-link">Contact</a>
+            </div>
+            <p>NASA Exoplanet Archive | Kepler Mission Data Release 25</p>
+            <p style="margin-top: 10px; font-size: 0.8rem;">
+                For scientific citations: Borucki et al. (2010), Thompson et al. (2018) |
+                DOI: 10.1088/0004-6256/example
+            </p>
+        </footer>
+    </div>
+
+    <!-- Modals -->
+    <div id="documentationModal" class="modal hidden"></div>
+    <div id="apiModal" class="modal hidden"></div>
+    <div id="exportModal" class="modal hidden"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Import map for ESM -->
+    <script type="importmap">
+    {
+      "imports": {
+        "three": "https://unpkg.com/three@0.156.1/build/three.module.js",
+        "three/examples/jsm/": "https://unpkg.com/three@0.156.1/examples/jsm/"
+      }
+    }
+    </script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+    <script type="module" src="../src/data-viewer-main.js"></script>
+</body>
+
+</html>

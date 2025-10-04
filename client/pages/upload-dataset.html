@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/png" href="../assets/logo.png" />
+
+  <title>Kepler Exoplanet Archive - Upload Dataset</title>
+  <link rel="stylesheet" href="../css/shared.css">
+  <link rel="stylesheet" href="../css/data-viewer.css">
+  <link rel="stylesheet" href="../css/upload-dataset.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+</head>
+
+<body>
+  <!-- Background -->
+  <div class="space-background"></div>
+  <canvas class="stars" id="stars"></canvas>
+
+  <!-- Top Navigation -->
+  <nav class="top-nav">
+    <div class="nav-container">
+      <div class="nav-brand">
+        <div class="nav-logo">K</div>
+        <div>
+          <div class="nav-title">Kepler Exoplanet Archive</div>
+          <div class="nav-subtitle">NASA Research Platform v2.4</div>
+        </div>
+      </div>
+      <div class="nav-actions">
+        <button class="nav-btn" id="backBtn">Back to Space</button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Upload Panel -->
+  <div class="container">
+    <div class="dashboard-header">
+      <div class="header-top">
+        <div class="header-info">
+          <h1>Upload New Dataset</h1>
+          <div class="header-meta">
+            Supports: <span>CSV format</span> |
+            Last Upload: <span id="lastUpload">—</span>
+          </div>
+        </div>
+        <div class="mission-info">
+          <div class="mission-badge">DATA UPLOAD</div>
+          <div class="status-indicator">
+            <div class="status-dot"></div>
+            Ready
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="main-layout">
+      <div class="upload-panel panel">
+        <div class="panel-header">
+          <div class="panel-title">Dataset Upload</div>
+        </div>
+
+        <form id="uploadForm" class="upload-form">
+          <div class="form-group">
+            <label for="actionSelect" class="filter-label">Choose Action</label>
+            <select id="actionSelect" class="filter-select">
+              <option disabled selected>Select an option</option>
+              <option value="upload">Upload Data</option>
+              <option value="predict">Get Prediction</option>
+            </select>
+          </div>
+
+          <!-- Drag & Drop Zone -->
+          <div class="drop-zone" id="dropZone">
+            <i class="bi bi-cloud-arrow-up" style="font-size:2rem;"></i>
+            <p>Drag & Drop your CSV here or click to browse</p>
+            <input type="file" id="fileInput" accept=".csv" hidden />
+          </div>
+
+          <button type="submit" class="action-btn primary" style="width:100%; margin-top:1rem;">
+            <i class="bi bi-upload"></i> Upload
+          </button>
+        </form>
+
+        <!-- Preview Section -->
+        <div id="previewSection" class="preview-section" style="display:none; margin-top:2rem;">
+          <h3>Preview (first 20 rows)</h3>
+          <div class="table-wrapper">
+            <table class="data-table" id="previewTable">
+              <thead></thead>
+              <tbody></tbody>
+            </table>
+          </div>
+          <button id="downloadBtn" class="action-btn" style="margin-top:1rem;">
+            <i class="bi bi-download"></i> Download Full CSV
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Upload Modal -->
+  <div id="uploadModal" style="display:none;">
+    <div class="modal-content">
+      <h2>Uploading...</h2>
+      <p>Please wait while we process your dataset 🚀</p>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-links">
+      <a href="#" class="footer-link">About</a>
+      <a href="#" class="footer-link">Documentation</a>
+      <a href="#" class="footer-link">API Reference</a>
+      <a href="#" class="footer-link">Contact</a>
+    </div>
+    <p>NASA Exoplanet Archive | Kepler Mission Data Release 25</p>
+  </footer>
+
+  <!-- Import map for Three.js -->
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://unpkg.com/three@0.156.1/build/three.module.js",
+      "three/examples/jsm/": "https://unpkg.com/three@0.156.1/examples/jsm/"
+    }
+  }
+  </script>
+
+  <script type="module" src="../src/upload-dataset.js"></script>
+</body>
+
+</html>
