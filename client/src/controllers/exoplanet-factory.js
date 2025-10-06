@@ -168,19 +168,6 @@ function createPlanets(scene, planetData = null) {
     // Create enhanced geometry
     const geometry = new THREE.IcosahedronGeometry(radius, 2);
 
-    // // Add surface variation
-    // const positions = geometry.attributes.position.array;
-    // for (let j = 0; j < positions.length; j += 3) {
-    //   const vertex = new THREE.Vector3(positions[j], positions[j + 1], positions[j + 2]);
-    //   const noise = (Math.random() - 0.5) * 0.3;
-    //   vertex.normalize().multiplyScalar(radius + noise);
-    //   positions[j] = vertex.x;
-    //   positions[j + 1] = vertex.y;
-    //   positions[j + 2] = vertex.z;
-    // }
-    // geometry.attributes.position.needsUpdate = true;
-    // geometry.computeVertexNormals();
-
     const texture = createRealisticPlanetTexture(planetInfo.type, radius, Math.random());
 
     // Enhanced material with texture
@@ -248,7 +235,8 @@ function createPlanets(scene, planetData = null) {
   return planets;
 }
 
-function enablePlanetInteractions(planets, camera, spaceship) {
+function enablePlanetInteractions(planets, camera, spaceship, planetTutor) {
+  console.log("enablePlanetInteractions called with tutor:", planetTutor);
   const raycaster = new THREE.Raycaster();
   const mouse = new THREE.Vector2();
   let hoveredPlanet = null;
@@ -304,12 +292,12 @@ function enablePlanetInteractions(planets, camera, spaceship) {
       if (forwardIntersects.length === 0) return;
 
       const targetPlanet = forwardIntersects[0].object;
-      handlePlanetInteraction(targetPlanet, spaceship);
+      handlePlanetInteraction(targetPlanet, spaceship, planetTutor);
       return;
     }
 
     const clickedPlanet = intersects[0].object;
-    handlePlanetInteraction(clickedPlanet, spaceship);
+    handlePlanetInteraction(clickedPlanet, spaceship, planetTutor);
   });
 
   // Keyboard shortcuts
@@ -317,7 +305,7 @@ function enablePlanetInteractions(planets, camera, spaceship) {
     if (event.key.toLowerCase() === 't') {
       const nearestPlanet = findNearestPlanet(planets, spaceship.position);
       if (nearestPlanet) {
-        handlePlanetInteraction(nearestPlanet, spaceship);
+        handlePlanetInteraction(nearestPlanet, spaceship, planetTutor);
       }
     }
 
@@ -329,26 +317,43 @@ function enablePlanetInteractions(planets, camera, spaceship) {
       }
     }
   });
-
+  // Mobile Shortcuts
   document.getElementById("toggle-info").addEventListener("click", () => {
-  const nearestPlanet = findNearestPlanet(planets, spaceship.position);
-  if (nearestPlanet) {
-    playFuturisticScanSound();
-    show3DPlanetInfo(nearestPlanet);
-  }
+    const nearestPlanet = findNearestPlanet(planets, spaceship.position);
+    if (nearestPlanet) {
+      playFuturisticScanSound();
+      show3DPlanetInfo(nearestPlanet);
+    }
   });
 
   document.getElementById("toggle-targets").addEventListener("click", () => {
-  const nearestPlanet = findNearestPlanet(planets, spaceship.position);
-  if (nearestPlanet) handlePlanetInteraction(nearestPlanet, spaceship);
+    const nearestPlanet = findNearestPlanet(planets, spaceship.position);
+    if (nearestPlanet) handlePlanetInteraction(nearestPlanet, spaceship, planetTutor);
   });
 }
 
-function handlePlanetInteraction(planet, spaceship) {
+function handlePlanetInteraction(planet, spaceship, planetTutor) {
   console.log("Interacting with planet:", planet.userData.name);
-
+  console.log("Planet Tutor instance:", planetTutor);
+  console.log(
+    "Is tutor showing?",
+    planetTutor ? planetTutor.isShowing() : "tutor is null"
+  );
   playFuturisticScanSound();
   landOnPlanet(spaceship, planet);
+
+  // Show the tutor with planet information
+  if (planetTutor) {
+    console.log("Attempting to show tutor...");
+    if (!planetTutor.isShowing()) {
+      console.log("Showing tutor with planet data:", planet.userData);
+      planetTutor.show(planet.userData);
+    } else {
+      console.log("Tutor is already showing, skipping");
+    }
+  } else {
+    console.error("Planet Tutor is null or undefined!");
+  }
 
   setTimeout(() => {
     show3DPlanetInfo(planet);

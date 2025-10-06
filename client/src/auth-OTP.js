@@ -8,6 +8,7 @@ class AuthOTPApp {
         this.renderer = null;
         this.starField = null;
         this.apiBase = "https://beyond-earth-backend.calmplant-c87294f1.uaenorth.azurecontainerapps.io";
+        // this.apiBase = "http://127.0.0.1:5500";
     }
 
     init() {

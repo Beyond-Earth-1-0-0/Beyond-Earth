@@ -272,7 +272,7 @@ async def upload_file(
         # Overwrite the original dataset file
         merged.to_csv(ORIGINAL_DATASET_PATH, index=False)
 
-        # 🔥 Retrain model after upload
+        # Retrain model after upload
         try:
             best_model, best_name, best_score = train_and_save_model(merged_path, save_path="../models/saved_model")
             return JSONResponse(status_code=200, content={

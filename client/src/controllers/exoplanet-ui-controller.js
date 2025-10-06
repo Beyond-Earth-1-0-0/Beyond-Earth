@@ -2,6 +2,8 @@
 import * as THREE from "three";
 import { playUIBeepSound } from "../utilities/audio-utils.js";
 
+let hudOpen = false;
+
 /**
  * Builds the UI overlay
  */
@@ -60,10 +62,10 @@ export function createUI() {
 	audioIndicator.innerHTML = "AUDIO ACTIVE";
 	exoplanetView.appendChild(audioIndicator);
 
-	// Gear toggle for settings
+	// burger-menu toggle for settings
 	const settingsToggle = document.createElement("button");
 	settingsToggle.id = "settings-toggle";
-	settingsToggle.innerHTML = `<img src="../assets/gear-icon.png" alt="settings" style="width: 24px; height: 24px;">`;
+	settingsToggle.innerHTML = `<img src="../assets/burger-menu-icon.png" alt="settings" style="width: 24px; height: 24px;">`;
 	settingsToggle.addEventListener("click", toggleSettings);
 	exoplanetView.appendChild(settingsToggle);
 
@@ -97,7 +99,7 @@ export function createUI() {
  * @param {THREE.Camera} camera
  * @returns {THREE.Group} The HUD group
  */
-export function createInfoHUD(planet, camera) {
+export function createInfoHUD(planet) {
 	const hudGroup = new THREE.Group();
 	hudGroup.position.set(0, 0, -5);
 	hudGroup.scale.set(0, 0, 0);
@@ -246,6 +248,38 @@ export function createInfoHUD(planet, camera) {
 	const mesh = new THREE.Mesh(geometry, material);
 	hudGroup.add(mesh);
 
+	const collider = new THREE.Mesh(
+		new THREE.PlaneGeometry(width, height),
+		new THREE.MeshBasicMaterial({ visible: false })
+	);
+	collider.userData.isHUDCollider = true;
+	hudGroup.add(collider);
+	hudGroup.userData.collider = collider;
+	// Draw close button
+	const closeSize = 60;
+	const closeX = canvas.width - closeSize - 40;
+	const closeY = 40;
+
+	ctx.fillStyle = 'rgba(255, 0, 0, 0.8)';
+	ctx.shadowColor = '#ff0000';
+	ctx.shadowBlur = 15;
+	ctx.fillRect(closeX, closeY, closeSize, closeSize);
+
+	ctx.fillStyle = '#ffffff';
+	ctx.font = 'bold 48px Orbitron';
+	ctx.textAlign = 'center';
+	ctx.textBaseline = 'middle';
+	ctx.fillText('✕', closeX + closeSize / 2, closeY + closeSize / 2);
+	// Store button bounds for click detection
+	hudGroup.userData.closeBounds = {
+		x: closeX,
+		y: closeY,
+		width: closeSize,
+		height: closeSize,
+		canvasWidth: canvas.width,
+		canvasHeight: canvas.height
+	};
+
 	return hudGroup;
 }
 
@@ -256,6 +290,7 @@ export function createInfoHUD(planet, camera) {
 export function show3DPlanetInfo(planet) {
 	// Import camera dynamically to avoid circular dependency
 	import('../exoplanet-main.js').then(({ camera, planets }) => {
+		hudOpen = true;
 		// Hide any existing HUD first
 		planets.forEach(p => {
 			if (p.userData.infoHUD && p !== planet) {
@@ -272,6 +307,18 @@ export function show3DPlanetInfo(planet) {
 		const hud = createInfoHUD(planet, camera);
 		camera.add(hud);
 		planet.userData.infoHUD = hud;
+		hud.userData.planetRef = planet;
+
+		const handleHUDMouseDown = (event) => {
+			const clickedClose = onHUDClick(event, hud, camera);
+			if (clickedClose) {
+				event.stopPropagation();
+				event.preventDefault();
+				window.removeEventListener('mousedown', handleHUDMouseDown);
+			}
+		};
+
+		window.addEventListener('mousedown', handleHUDMouseDown);
 
 		// Fade-in animation
 		let scale = 0;
@@ -289,6 +336,57 @@ export function show3DPlanetInfo(planet) {
 	});
 }
 
+const raycaster = new THREE.Raycaster();
+const mouse = new THREE.Vector2();
+
+function onHUDClick(event, hudGroup, camera) {
+	if (!hudGroup.visible || !hudGroup.userData.collider) return false;
+
+	mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+	mouse.y = - (event.clientY / window.innerHeight) * 2 + 1;
+
+	raycaster.setFromCamera(mouse, camera);
+
+	const intersects = raycaster.intersectObject(hudGroup.userData.collider);
+	if (intersects.length === 0) return false;
+
+	const uv = intersects[0].uv;
+	const bounds = hudGroup.userData.closeBounds;
+
+	const x = uv.x * bounds.canvasWidth;
+	const y = (1 - uv.y) * bounds.canvasHeight;
+
+	const inside =
+		x > bounds.x &&
+		x < bounds.x + bounds.width &&
+		y > bounds.y &&
+		y < bounds.y + bounds.height;
+
+	if (inside) {
+		playUIBeepSound();
+
+		let scale = hudGroup.scale.x;
+		const fadeOut = () => {
+			if (scale > 0) {
+				scale -= 0.05;
+				hudGroup.scale.set(scale, scale, scale);
+				requestAnimationFrame(fadeOut);
+			} else {
+				const planet = hudGroup.userData.planetRef;
+				if (planet) {
+					hide3DPlanetInfo(planet, camera);
+				}
+			}
+		};
+		fadeOut();
+
+		return true;
+	}
+
+	return false;
+}
+export { onHUDClick };
+
 /**
  * Hides the HUD info
  * @param {THREE.Mesh} planet
@@ -296,6 +394,7 @@ export function show3DPlanetInfo(planet) {
  */
 export function hide3DPlanetInfo(planet, camera) {
 	if (planet.userData.infoHUD) {
+		hudOpen = false;
 		camera.remove(planet.userData.infoHUD);
 		planet.userData.infoHUD.traverse(child => {
 			if (child.geometry) child.geometry.dispose();
@@ -367,4 +466,7 @@ function openFilePicker() {
 }
 function openDataViewer() {
 	window.location.href = "../pages/data-viewer.html";
+}
+export function isHUDOpen() {
+	return hudOpen;
 }
