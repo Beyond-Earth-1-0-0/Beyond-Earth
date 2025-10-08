@@ -588,7 +588,7 @@ export class DesertSceneController {
       setTimeout(() => {
         // Navigate to exoplanet scene
         try {
-          window.location.href = "exo.html";
+          window.location.href = "exo-space.html";
         } catch (e) {
           window.location.hash = "#exoplanets";
         }

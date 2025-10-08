@@ -1,106 +1,205 @@
-/* Joystick base styles */
-#joystick-base,
-#look-base {
-    width: 100px;
-    height: 100px;
-    border-radius: 50%;
-    background: rgba(255, 255, 255, 0.1);
-    border: 2px solid #00ff88;
-    touch-action: none;
-}
-
-#joystick-base {
-    bottom: 20px;
-    left: 20px;
+/* Mobile Controls Styling */
+#mobile-controls {
     position: fixed;
-}
-
-#look-base {
-    bottom: 20px;
-    right: 20px;
-    position: fixed;
-}
-
-#joystick-handle,
-#look-handle {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    background: rgba(0, 255, 136, 0.7);
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-}
-
-/* Mobile buttons wrapper */
-#mobile-controls,
-#mobile-buttons {
-    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    left: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
     z-index: 1000;
-    display: none;
+    pointer-events: auto;
 }
 
-#mobile-buttons {
-    bottom: 20px;
+/* Top left info buttons */
+#mobile-controls .top-col {
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    right: auto;
+    bottom: auto;
+    flex-direction: column;
+}
+
+.button-row {
+    display: flex;
+    gap: 8px;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+/* D-Pad Diamond Layout */
+#dpad-container {
+    position: relative;
+    width: 150px;
+    height: 150px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#dpad-container .mobile-button {
+    position: absolute;
+}
+
+#dpad-container #btn-up {
+    top: 0;
     left: 50%;
     transform: translateX(-50%);
-    display: flex;
-    gap: 40px;
-    z-index: 1001;
+}
+
+#dpad-container #btn-down {
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+#dpad-container #btn-left {
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+#dpad-container #btn-right {
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
 }
 
 .mobile-button {
     width: 50px;
     height: 50px;
     border-radius: 50%;
-    background: rgba(255, 255, 255, 0.1);
-    color: #00ff88;
-    text-align: center;
-    line-height: 50px;
+    background: rgba(0, 255, 255, 0.2);
+    border: 2px solid rgba(0, 255, 255, 0.6);
+    color: #00ffff;
+    font-size: 20px;
     font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
     user-select: none;
-    z-index: 1001;
+    transition: all 0.15s ease;
+    box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
+    backdrop-filter: blur(5px);
 }
 
-/* Mobile view */
-@media screen and (max-width: 1024px) {
+.mobile-button:active,
+.mobile-button.active {
+    background: rgba(0, 255, 255, 0.4);
+    border-color: rgba(0, 255, 255, 1);
+    box-shadow: 0 0 25px rgba(0, 255, 255, 0.6);
+    transform: scale(0.95);
+}
+
+.control-btn {
+    background: rgba(0, 255, 136, 0.2);
+    border-color: rgba(0, 255, 136, 0.6);
+    color: #00ff88;
+    box-shadow: 0 0 15px rgba(0, 255, 136, 0.3);
+}
+
+.control-btn:active,
+.control-btn.active {
+    background: rgba(0, 255, 136, 0.4);
+    border-color: rgba(0, 255, 136, 1);
+    box-shadow: 0 0 25px rgba(0, 255, 136, 0.6);
+}
+
+#btn-roll-right {
+    margin-left: 60px;
+}
+
+/* Joystick Styling - LEFT JOYSTICK ONLY */
+#joystick-base {
+    position: fixed;
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    background: rgba(0, 255, 255, 0.1);
+    border: 3px solid rgba(0, 255, 255, 0.3);
+    z-index: 1000;
+    pointer-events: auto;
+    backdrop-filter: blur(5px);
+    bottom: 30px;
+    left: 30px;
+    right: auto;
+}
+
+#joystick-handle {
+    position: absolute;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: rgba(0, 255, 255, 0.6);
+    border: 2px solid rgba(0, 255, 255, 1);
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+    transition: all 0.1s ease;
+}
+
+#joystick-handle.active {
+    background: rgba(0, 255, 255, 0.8);
+    box-shadow: 0 0 30px rgba(0, 255, 255, 0.8);
+}
+
+/* Mobile mode adjustments */
+body.mobile-mode #mobile-controls {
+    display: flex;
+}
+
+body.mobile-mode #joystick-base {
+    display: block;
+}
+
+/* Hide on desktop by default */
+body:not(.mobile-mode) #mobile-controls,
+body:not(.mobile-mode) #joystick-base {
+    display: none;
+}
+
+/* Responsive sizing for smaller screens */
+@media (max-width: 768px) {
+    .mobile-button {
+        width: 45px;
+        height: 45px;
+        font-size: 18px;
+    }
+
+    #joystick-base {
+        width: 100px;
+        height: 100px;
+    }
+
+    #joystick-handle {
+        width: 40px;
+        height: 40px;
+    }
+}
+
+@media (max-width: 480px) {
+    .mobile-button {
+        width: 40px;
+        height: 40px;
+        font-size: 16px;
+    }
+
+    .button-row {
+        gap: 6px;
+    }
+
     #mobile-controls {
-        display: block;
-    }
-
-    /* Status display top-left */
-    #status-display {
-        top: 10px;
-        left: 10px;
-        right: auto;
-        bottom: auto;
-        position: fixed;
-    }
-
-    /* Hide desktop overlay */
-    #controls-overlay {
-        display: none !important;
-    }
-}
-
-/* Desktop view */
-@media screen and (min-width: 1025px) {
-
-    #mobile-controls,
-    #mobile-buttons {
-        display: none;
-    }
-
-    #status-display {
+        gap: 8px;
         bottom: 20px;
-        left: 20px;
-        top: auto;
-        right: auto;
-        position: fixed;
+        right: 20px;
     }
 
-    #controls-overlay {
-        display: block !important;
+    #mobile-controls .top-col {
+        top: 8px;
+        left: 8px;
     }
 }

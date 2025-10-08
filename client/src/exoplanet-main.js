@@ -11,6 +11,7 @@ import { initializeExplorer } from "./initialization.js";
 import { resolveCollisions } from "./utilities/spaceship-physics-utils.js";
 
 import { getPlanetTutor } from "./controllers/planet-tutor-controller.js";
+import "./controllers/mobile-controls.js";
 
 console.log("Planet Tutor module loaded");
 

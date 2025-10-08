@@ -120,7 +120,7 @@ class DataViewerApp {
             if (window.history.length > 1) {
                 window.history.back();
             } else {
-                window.location.href = '../pages/exo.html'; // fallback URL
+                window.location.href = '../pages/exo-space.html'; // fallback URL
             }
         });
 

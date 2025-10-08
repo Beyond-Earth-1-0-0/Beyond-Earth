@@ -13,29 +13,17 @@
     href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400..900&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap"
     rel="stylesheet">
   <link rel="stylesheet" href="../css/shared.css">
-  <link rel="stylesheet" href="../css/exoplanet.css">
+  <link rel="stylesheet" href="../css/exo-space.css">
   <link rel="stylesheet" href="../css/mobile-controls.css">
+  <link rel="stylesheet" href="../css/planet-tutor.css">
 </head>
 
 <body>
   <div id="exoplanet-view"></div>
   <!-- Mobile buttons -->
-  <div id="mobile-buttons">
-    <div id="toggle-info" class="mobile-button">i</div>
-    <div id="center-btn" class="mobile-button">c</div>
-    <div id="toggle-targets" class="mobile-button">t</div>
-  </div>
-
-  <!-- Movement joystick (left) -->
-  <div id="mobile-controls">
-    <div id="joystick-base">
-      <div id="joystick-handle"></div>
-    </div>
-
-    <!-- Rotation joystick (right) -->
-    <div id="look-base">
-      <div id="look-handle"></div>
-    </div>
+  <div id="mobile-controls"></div>
+  <div id="joystick-base">
+    <div id="joystick-handle"></div>
   </div>
   <script type="importmap">
     {
@@ -45,7 +33,8 @@
       }
     }
   </script>
-
+  <!-- Mobile Controls Script (Load first) -->
+  <script type="module" src="../src/controllers/mobile-controls.js"></script>
   <script type="module" src="../src/exoplanet-main.js"></script>
 </body>
 

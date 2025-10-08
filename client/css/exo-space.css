@@ -1,0 +1,1664 @@
+/* Exoplanet Cockpit Styles - Fully Responsive */
+
+/* Override body for immersive cockpit experience */
+body {
+    font-family: 'Orbitron', 'Courier New', monospace;
+    overflow: hidden !important;
+    cursor: none;
+}
+
+/* Cockpit container */
+#exoplanet-view {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden !important;
+    font-family: 'Orbitron', 'Courier New', monospace;
+    background: #000;
+    color: #fff;
+}
+
+/* Canvas specific to exoplanet view */
+#exoplanet-view canvas {
+    display: block;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw !important;
+    height: 100vh !important;
+    cursor: crosshair;
+    z-index: 1;
+}
+
+#exoplanet-view canvas:hover {
+    cursor: crosshair;
+}
+
+/* Cockpit HUD */
+.cockpit-hud {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    background: linear-gradient(145deg,
+            rgba(0, 74, 90, 0.9),
+            rgba(5, 37, 45, 0.95));
+    border: 2px solid rgba(0, 255, 255, 0.4);
+    border-radius: 12px;
+    padding: 20px;
+    color: #00ffff;
+    font-family: 'Orbitron', monospace;
+    backdrop-filter: blur(15px);
+    z-index: 998;
+    max-width: 320px;
+    box-shadow:
+        0 0 25px rgba(0, 255, 255, 0.3),
+        inset 0 0 15px rgba(0, 255, 255, 0.1);
+    transition: all 0.3s ease;
+}
+
+.cockpit-hud h3 {
+    color: #00ff80;
+    margin-bottom: 12px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-size: 16px;
+    text-shadow: 0 0 10px rgba(0, 255, 128, 0.6);
+    border-bottom: 1px solid rgba(0, 255, 255, 0.3);
+    padding-bottom: 8px;
+}
+
+.cockpit-hud p {
+    font-size: 12px;
+    line-height: 1.5;
+    margin: 4px 0;
+    color: #cccccc;
+}
+
+.cockpit-hud strong {
+    color: #ffaa00;
+    text-shadow: 0 0 5px rgba(255, 170, 0, 0.6);
+}
+
+
+/* Gear icon animation */
+.gear-icon {
+    animation: rotate 3s linear infinite;
+}
+
+@keyframes rotate {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* UI Container - Slide Panel */
+#uiContainer {
+    position: fixed;
+    top: 0;
+    right: -350px;
+    width: 350px;
+    height: 100vh;
+    background: linear-gradient(180deg,
+            rgba(10, 74, 90, 0.95) 0%,
+            rgba(5, 37, 45, 0.98) 100%);
+    backdrop-filter: blur(15px);
+    border-left: 2px solid rgba(0, 255, 255, 0.3);
+    padding: 20px;
+    transition: right 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    z-index: 999;
+    overflow-y: auto;
+    box-shadow: -10px 0 30px rgba(0, 0, 0, 0.5);
+}
+
+#uiContainer.active {
+    right: 0;
+}
+
+#uiContainer.collapsed {
+    right: -350px;
+}
+
+/* Scrollbar styling */
+#uiContainer::-webkit-scrollbar {
+    width: 8px;
+}
+
+#uiContainer::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
+}
+
+#uiContainer::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, #00ffff, #0080ff);
+    border-radius: 4px;
+}
+
+/* Control Buttons */
+.control-button,
+#modeToggleButton,
+#uploadButton,
+button {
+    width: 100%;
+    padding: 15px;
+    margin: 10px 0;
+    border: none;
+    background: linear-gradient(145deg,
+            rgba(0, 255, 255, 0.1),
+            rgba(0, 128, 255, 0.1));
+    color: #00ffff;
+    font-family: 'Orbitron', monospace;
+    font-size: 14px;
+    font-weight: bold;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 1px solid rgba(0, 255, 255, 0.2);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.control-button:hover,
+#modeToggleButton:hover,
+#uploadButton:hover,
+button:hover {
+    background: linear-gradient(145deg,
+            rgba(0, 255, 255, 0.2),
+            rgba(0, 128, 255, 0.2));
+    border: 1px solid rgba(0, 255, 255, 0.5);
+    box-shadow: 0 5px 15px rgba(0, 255, 255, 0.3);
+    transform: translateY(-2px);
+}
+
+.control-button:active,
+#modeToggleButton:active,
+#uploadButton:active,
+button:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 8px rgba(0, 255, 255, 0.2);
+}
+
+/* Planet Info Panel */
+#planet-info {
+    background: linear-gradient(145deg,
+            rgba(0, 0, 0, 0.9),
+            rgba(10, 74, 90, 0.9));
+    border: 2px solid rgba(0, 255, 255, 0.4);
+    border-radius: 12px;
+    padding: 20px;
+    margin-top: 20px;
+    color: #ffffff;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(10px);
+}
+
+.planet-info-content h2,
+.planet-header h2 {
+    color: #00ffff;
+    font-size: 24px;
+    margin-bottom: 10px;
+    text-align: center;
+    text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+    border-bottom: 2px solid rgba(0, 255, 255, 0.3);
+    padding-bottom: 10px;
+}
+
+.planet-type {
+    color: #80ff80;
+    text-align: center;
+    font-style: italic;
+    margin-bottom: 20px;
+    font-size: 16px;
+}
+
+.planet-section {
+    margin: 15px 0;
+    padding: 10px;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 6px;
+    border-left: 3px solid rgba(0, 255, 255, 0.5);
+}
+
+.planet-section h3 {
+    color: #00ff80;
+    font-size: 16px;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.planet-section p {
+    color: #cccccc;
+    font-size: 13px;
+    line-height: 1.4;
+    margin: 5px 0;
+}
+
+.planet-section b {
+    color: #80ffff;
+}
+
+.planet-actions {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.close-button {
+    background: linear-gradient(145deg, #ff4444, #cc2222) !important;
+    color: white !important;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-family: 'Orbitron', monospace;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    width: auto !important;
+    margin: 0 !important;
+}
+
+.close-button:hover {
+    background: linear-gradient(145deg, #ff6666, #ff2222) !important;
+    box-shadow: 0 5px 15px rgba(255, 68, 68, 0.4) !important;
+    transform: translateY(-2px) !important;
+}
+
+/* Section Headers */
+.ui-section-header {
+    color: #00ffff;
+    font-size: 18px;
+    font-weight: bold;
+    margin: 30px 0 15px 0;
+    padding-bottom: 8px;
+    border-bottom: 1px solid rgba(0, 255, 255, 0.3);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.ui-section-header:first-child {
+    margin-top: 80px;
+}
+
+/* Crosshair */
+.crosshair {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 40px;
+    height: 40px;
+    pointer-events: none;
+    z-index: 999;
+}
+
+.crosshair::before,
+.crosshair::after {
+    content: '';
+    position: absolute;
+    background: #00ffff;
+    box-shadow: 0 0 15px #00ffff, 0 0 30px #00ffff;
+    animation: crosshairPulse 2s ease-in-out infinite;
+}
+
+.crosshair::before {
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 2px;
+    transform: translateY(-50%);
+}
+
+.crosshair::after {
+    left: 50%;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    transform: translateX(-50%);
+}
+
+@keyframes crosshairPulse {
+
+    0%,
+    100% {
+        opacity: 0.6;
+    }
+
+    50% {
+        opacity: 1;
+    }
+}
+
+/* Status Display */
+#status-display {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    background: linear-gradient(145deg, rgba(0, 20, 40, 0.95), rgba(0, 40, 80, 0.95));
+    color: #00ffff;
+    padding: 15px 20px;
+    border-radius: 12px;
+    border: 2px solid #00ffff;
+    font-family: 'Orbitron', monospace;
+    font-size: 12px;
+    z-index: 1000;
+    box-shadow: 0 0 25px rgba(0, 255, 255, 0.3);
+    backdrop-filter: blur(10px);
+    min-width: 200px;
+}
+
+.status-header {
+    color: #00ff88;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 8px;
+    font-size: 14px;
+    letter-spacing: 1px;
+    border-bottom: 1px solid rgba(0, 255, 255, 0.3);
+    padding-bottom: 5px;
+}
+
+.status-line {
+    margin: 3px 0;
+    display: flex;
+    justify-content: space-between;
+}
+
+.status-line span {
+    color: #ffaa00;
+    font-weight: bold;
+}
+
+/* Controls Overlay */
+#controls-overlay {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    background: linear-gradient(145deg, rgba(0, 20, 40, 0.9), rgba(0, 40, 80, 0.9));
+    color: #00ffff;
+    padding: 20px;
+    border-radius: 12px;
+    border: 2px solid #00ffff;
+    font-family: 'Orbitron', monospace;
+    font-size: 11px;
+    z-index: 998;
+    max-width: 280px;
+    box-shadow: 0 0 25px rgba(0, 255, 255, 0.3);
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+}
+
+#controls-overlay.fade-out {
+    opacity: 0.3;
+}
+
+#controls-overlay:hover {
+    opacity: 1 !important;
+}
+
+/* Mobile controls overlay visibility */
+#controls-overlay.mobile-hidden {
+    display: none;
+}
+
+#controls-overlay.mobile-visible {
+    display: block;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    max-width: 90vw;
+    max-height: 80vh;
+    overflow-y: auto;
+    z-index: 2000;
+}
+
+/* Mobile close button for controls overlay */
+.mobile-close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 35px;
+    height: 35px;
+    border: none;
+    background: linear-gradient(145deg, #ff4444, #cc2222);
+    color: white;
+    font-size: 24px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    box-shadow: 0 3px 10px rgba(255, 68, 68, 0.4);
+    z-index: 10;
+}
+
+body.mobile-mode .mobile-close {
+    display: flex;
+}
+
+.mobile-close:active {
+    transform: scale(0.9);
+    box-shadow: 0 2px 5px rgba(255, 68, 68, 0.3);
+}
+
+/* Cockpit HUD mobile visibility */
+.cockpit-hud.mobile-hidden {
+    display: none;
+}
+
+.cockpit-hud.mobile-visible {
+    display: block;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    max-width: 90vw;
+    max-height: 80vh;
+    overflow-y: auto;
+    z-index: 2000;
+}
+
+/* Instructions mobile visibility */
+#instructions.mobile-hidden {
+    display: none;
+}
+
+.controls-header {
+    color: #00ff88;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 15px;
+    font-size: 14px;
+    letter-spacing: 1px;
+    border-bottom: 1px solid rgba(0, 255, 255, 0.3);
+    padding-bottom: 8px;
+}
+
+.control-group {
+    margin-bottom: 15px;
+}
+
+.control-category {
+    color: #ffaa00;
+    font-weight: bold;
+    margin-bottom: 5px;
+    font-size: 12px;
+}
+
+.control-item {
+    margin: 2px 0;
+    padding-left: 10px;
+    display: flex;
+    align-items: center;
+}
+
+kbd {
+    background: linear-gradient(145deg, #00ffff, #0080ff);
+    color: #000;
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-family: 'Orbitron', monospace;
+    font-size: 10px;
+    font-weight: bold;
+    margin-right: 8px;
+    min-width: 60px;
+    text-align: center;
+    box-shadow: 0 0 5px rgba(0, 255, 255, 0.3);
+}
+
+/* Settings Toggle */
+#settings-toggle {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    width: 50px;
+    height: 50px;
+    border: none;
+    background: linear-gradient(145deg, #00ffff, #0080ff);
+    color: #000;
+    font-size: 20px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
+    z-index: 1001;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#settings-toggle:hover {
+    transform: rotate(180deg) scale(1.1);
+    box-shadow: 0 0 30px rgba(0, 255, 255, 0.6);
+}
+
+/* Settings Panel */
+.settings-panel {
+    position: fixed;
+    top: 80px;
+    right: 20px;
+    background: linear-gradient(145deg, rgba(0, 20, 40, 0.95), rgba(0, 40, 80, 0.95));
+    color: #00ffff;
+    padding: 20px;
+    border-radius: 12px;
+    border: 2px solid #00ffff;
+    font-family: 'Orbitron', monospace;
+    z-index: 1000;
+    box-shadow: 0 0 25px rgba(0, 255, 255, 0.3);
+    backdrop-filter: blur(10px);
+    min-width: 200px;
+    transition: all 0.3s ease;
+}
+
+.settings-panel.hidden {
+    opacity: 0;
+    transform: translateX(300px);
+    pointer-events: none;
+}
+
+.settings-header {
+    color: #00ff88;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 15px;
+    font-size: 14px;
+    letter-spacing: 1px;
+    border-bottom: 1px solid rgba(0, 255, 255, 0.3);
+    padding-bottom: 8px;
+}
+
+.setting-btn {
+    width: 100%;
+    padding: 10px;
+    margin: 8px 0;
+    border: none;
+    background: linear-gradient(145deg, rgba(0, 255, 255, 0.1), rgba(0, 128, 255, 0.1));
+    color: #00ffff;
+    font-family: 'Orbitron', monospace;
+    font-size: 12px;
+    font-weight: bold;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 1px solid rgba(0, 255, 255, 0.2);
+    text-transform: uppercase;
+}
+
+.setting-btn:hover {
+    background: linear-gradient(145deg, rgba(0, 255, 255, 0.2), rgba(0, 128, 255, 0.2));
+    box-shadow: 0 5px 15px rgba(0, 255, 255, 0.3);
+    transform: translateY(-2px);
+}
+
+/* Audio Indicator */
+#audio-indicator {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: rgba(0, 100, 0, 0.8);
+    color: #00ff00;
+    padding: 8px 15px;
+    border-radius: 20px;
+    font-family: 'Orbitron', monospace;
+    font-size: 12px;
+    font-weight: bold;
+    z-index: 1000;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.3s ease;
+    border: 1px solid #00ff00;
+    box-shadow: 0 0 15px rgba(0, 255, 0, 0.3);
+}
+
+#audio-indicator.active {
+    opacity: 1;
+    transform: translateY(0);
+    animation: audioIndicatorPulse 0.5s ease-in-out;
+}
+
+@keyframes audioIndicatorPulse {
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.1);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+/* Loading Screen */
+.exoplanet-loading {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: radial-gradient(circle, #001122 0%, #000000 100%);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 10000;
+    color: #00ffff;
+    font-family: 'Orbitron', monospace;
+}
+
+.exoplanet-loading .loading-text {
+    font-size: 24px;
+    margin-bottom: 20px;
+    text-shadow: 0 0 10px rgba(0, 255, 255, 0.8);
+    animation: pulse 2s infinite;
+}
+
+/* Instructions Panel */
+#instructions {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    background: rgba(0, 20, 40, 0.9);
+    color: #00ffff;
+    padding: 20px;
+    border-radius: 10px;
+    font-family: 'Orbitron', monospace;
+    font-size: 13px;
+    z-index: 1000;
+    max-width: 320px;
+    border: 2px solid #00ffff;
+    box-shadow:
+        0 0 20px rgba(0, 255, 255, 0.3),
+        inset 0 0 10px rgba(0, 255, 255, 0.1);
+    backdrop-filter: blur(5px);
+    transition: all 0.3s ease;
+}
+
+#instructions h3 {
+    margin: 0 0 12px 0;
+    color: #00ffff;
+    text-shadow: 0 0 10px rgba(0, 255, 255, 0.8);
+    font-size: 16px;
+}
+
+#instructions strong {
+    color: #ffaa00;
+    text-shadow: 0 0 5px rgba(255, 170, 0, 0.6);
+}
+
+/* ==============================================
+PLANET HUD OVERLAY STYLES (CSS-based)
+============================================== */
+
+.planet-hud-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 5000;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(5px);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: all;
+    cursor: default;
+}
+
+.planet-hud-overlay.planet-hud-visible {
+    opacity: 1;
+}
+
+.planet-hud-overlay.planet-hud-closing {
+    opacity: 0;
+}
+
+.planet-hud-container {
+    position: relative;
+    width: 90%;
+    max-width: 1200px;
+    max-height: 85vh;
+    background: linear-gradient(145deg, rgba(0, 20, 40, 0.95), rgba(0, 40, 80, 0.95));
+    border: 3px solid #00ffff;
+    border-radius: 16px;
+    padding: 30px;
+    box-shadow: 0 0 50px rgba(0, 255, 255, 0.4), inset 0 0 30px rgba(0, 255, 255, 0.1);
+    font-family: 'Orbitron', monospace;
+    overflow-y: auto;
+    animation: planetHudSlideIn 0.3s ease;
+}
+
+@keyframes planetHudSlideIn {
+    from {
+        transform: scale(0.8) translateY(-50px);
+        opacity: 0;
+    }
+
+    to {
+        transform: scale(1) translateY(0);
+        opacity: 1;
+    }
+}
+
+.planet-hud-close {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    width: 50px;
+    height: 50px;
+    background: linear-gradient(145deg, rgba(255, 0, 0, 0.8), rgba(200, 0, 0, 0.8));
+    border: 2px solid #ff0000;
+    border-radius: 8px;
+    color: #ffffff;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    box-shadow: 0 0 15px rgba(255, 0, 0, 0.5);
+    z-index: 10;
+}
+
+.planet-hud-close:hover {
+    background: linear-gradient(145deg, rgba(255, 50, 50, 0.9), rgba(255, 0, 0, 0.9));
+    box-shadow: 0 0 25px rgba(255, 0, 0, 0.7);
+    transform: scale(1.1);
+}
+
+.planet-hud-header {
+    text-align: center;
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 2px solid rgba(0, 255, 255, 0.3);
+}
+
+.planet-hud-title {
+    color: #00ff88;
+    font-size: 48px;
+    font-weight: bold;
+    margin: 0;
+    text-shadow: 0 0 20px rgba(0, 255, 136, 0.6);
+    letter-spacing: 2px;
+}
+
+.planet-hud-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    margin-bottom: 30px;
+}
+
+.planet-hud-column {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.planet-hud-data-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 15px;
+    background: rgba(0, 40, 80, 0.5);
+    border-left: 3px solid #00ffff;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+}
+
+.planet-hud-data-row:hover {
+    background: rgba(0, 60, 100, 0.6);
+    border-left-color: #00ff88;
+    transform: translateX(5px);
+}
+
+.planet-hud-label {
+    color: #00ffff;
+    font-size: 20px;
+    font-weight: 600;
+    text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+}
+
+.planet-hud-value {
+    color: #ffaa00;
+    font-size: 20px;
+    font-weight: bold;
+    text-shadow: 0 0 10px rgba(255, 170, 0, 0.5);
+}
+
+.planet-hud-stats-title {
+    color: #00ffff;
+    font-size: 32px;
+    font-weight: bold;
+    margin: 0 0 20px 0;
+    text-shadow: 0 0 15px rgba(0, 255, 255, 0.6);
+    text-align: center;
+}
+
+.planet-hud-stat-item {
+    margin-bottom: 25px;
+}
+
+.planet-hud-stat-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.planet-hud-stat-label {
+    color: #00ffff;
+    font-size: 20px;
+    font-weight: 600;
+    text-shadow: 0 0 8px rgba(0, 255, 255, 0.5);
+}
+
+.planet-hud-stat-value {
+    color: #ffffff;
+    font-size: 18px;
+    font-weight: bold;
+    background: rgba(0, 0, 0, 0.5);
+    padding: 4px 12px;
+    border-radius: 4px;
+}
+
+.planet-hud-stat-bar-container {
+    width: 100%;
+    height: 28px;
+    background: rgba(0, 40, 80, 0.5);
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.5);
+}
+
+.planet-hud-stat-bar {
+    height: 100%;
+    background: linear-gradient(90deg, #00ffff, #0080ff);
+    border-radius: 14px;
+    box-shadow: 0 0 15px rgba(0, 255, 255, 0.6);
+    transition: width 0.5s ease;
+    animation: barPulse 2s ease-in-out infinite;
+}
+
+@keyframes barPulse {
+
+    0%,
+    100% {
+        box-shadow: 0 0 15px rgba(0, 255, 255, 0.6);
+    }
+
+    50% {
+        box-shadow: 0 0 25px rgba(0, 255, 255, 0.9);
+    }
+}
+
+.planet-hud-habitable {
+    background: linear-gradient(145deg, rgba(0, 255, 0, 0.2), rgba(0, 200, 0, 0.2));
+    border: 2px solid #00ff00;
+    color: #00ff00;
+    font-size: 36px;
+    font-weight: bold;
+    text-align: center;
+    padding: 20px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+    text-shadow: 0 0 30px rgba(0, 255, 0, 0.8);
+    box-shadow: 0 0 30px rgba(0, 255, 0, 0.4), inset 0 0 20px rgba(0, 255, 0, 0.2);
+    animation: habitablePulse 2s ease-in-out infinite;
+}
+
+@keyframes habitablePulse {
+
+    0%,
+    100% {
+        transform: scale(1);
+        box-shadow: 0 0 30px rgba(0, 255, 0, 0.4), inset 0 0 20px rgba(0, 255, 0, 0.2);
+    }
+
+    50% {
+        transform: scale(1.02);
+        box-shadow: 0 0 45px rgba(0, 255, 0, 0.6), inset 0 0 30px rgba(0, 255, 0, 0.3);
+    }
+}
+
+.planet-hud-footer {
+    text-align: center;
+    color: #ffffff;
+    font-size: 18px;
+    font-weight: 600;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+    padding-top: 20px;
+    border-top: 1px solid rgba(0, 255, 255, 0.3);
+}
+
+/* Scrollbar for HUD container */
+.planet-hud-container::-webkit-scrollbar {
+    width: 10px;
+}
+
+.planet-hud-container::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 5px;
+}
+
+.planet-hud-container::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, #00ffff, #0080ff);
+    border-radius: 5px;
+}
+
+/* ============================================
+   RESPONSIVE DESIGN FOR PLANET HUD
+   ============================================ */
+
+/* Tablets */
+@media (max-width: 1024px) {
+    .planet-hud-container {
+        padding: 25px;
+        max-width: 95%;
+    }
+
+    .planet-hud-title {
+        font-size: 40px;
+    }
+
+    .planet-hud-content {
+        gap: 30px;
+    }
+
+    .planet-hud-label,
+    .planet-hud-value {
+        font-size: 18px;
+    }
+
+    .planet-hud-stats-title {
+        font-size: 28px;
+    }
+
+    .planet-hud-stat-label {
+        font-size: 18px;
+    }
+
+    .planet-hud-stat-value {
+        font-size: 16px;
+    }
+
+    .planet-hud-habitable {
+        font-size: 32px;
+    }
+}
+
+/* Mobile - Stack columns */
+@media (max-width: 768px) {
+    .planet-hud-container {
+        padding: 20px;
+        width: 95%;
+        max-height: 90vh;
+    }
+
+    .planet-hud-close {
+        width: 45px;
+        height: 45px;
+        font-size: 24px;
+        top: 15px;
+        right: 15px;
+    }
+
+    .planet-hud-title {
+        font-size: 32px;
+        margin-right: 50px;
+    }
+
+    .planet-hud-content {
+        grid-template-columns: 1fr;
+        gap: 25px;
+    }
+
+    .planet-hud-data-row {
+        padding: 10px 12px;
+    }
+
+    .planet-hud-label,
+    .planet-hud-value {
+        font-size: 16px;
+    }
+
+    .planet-hud-stats-title {
+        font-size: 24px;
+        margin-bottom: 15px;
+    }
+
+    .planet-hud-stat-item {
+        margin-bottom: 20px;
+    }
+
+    .planet-hud-stat-label {
+        font-size: 16px;
+    }
+
+    .planet-hud-stat-value {
+        font-size: 14px;
+        padding: 3px 10px;
+    }
+
+    .planet-hud-stat-bar-container {
+        height: 24px;
+    }
+
+    .planet-hud-habitable {
+        font-size: 28px;
+        padding: 15px;
+    }
+
+    .planet-hud-footer {
+        font-size: 16px;
+    }
+}
+
+/* Small phones */
+@media (max-width: 480px) {
+    .planet-hud-container {
+        padding: 15px;
+    }
+
+    .planet-hud-close {
+        width: 40px;
+        height: 40px;
+        font-size: 20px;
+        top: 10px;
+        right: 10px;
+    }
+
+    .planet-hud-title {
+        font-size: 26px;
+        margin-right: 45px;
+    }
+
+    .planet-hud-header {
+        margin-bottom: 20px;
+        padding-bottom: 15px;
+    }
+
+    .planet-hud-content {
+        gap: 20px;
+        margin-bottom: 20px;
+    }
+
+    .planet-hud-data-row {
+        padding: 8px 10px;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 5px;
+    }
+
+    .planet-hud-label,
+    .planet-hud-value {
+        font-size: 14px;
+    }
+
+    .planet-hud-stats-title {
+        font-size: 20px;
+    }
+
+    .planet-hud-stat-item {
+        margin-bottom: 15px;
+    }
+
+    .planet-hud-stat-label {
+        font-size: 14px;
+    }
+
+    .planet-hud-stat-value {
+        font-size: 13px;
+    }
+
+    .planet-hud-stat-bar-container {
+        height: 20px;
+    }
+
+    .planet-hud-habitable {
+        font-size: 22px;
+        padding: 12px;
+    }
+
+    .planet-hud-footer {
+        font-size: 14px;
+        padding-top: 15px;
+    }
+}
+
+/* Very small phones */
+@media (max-width: 360px) {
+    .planet-hud-title {
+        font-size: 22px;
+    }
+
+    .planet-hud-label,
+    .planet-hud-value {
+        font-size: 13px;
+    }
+
+    .planet-hud-stats-title {
+        font-size: 18px;
+    }
+
+    .planet-hud-stat-label {
+        font-size: 13px;
+    }
+
+    .planet-hud-stat-value {
+        font-size: 12px;
+    }
+
+    .planet-hud-habitable {
+        font-size: 20px;
+    }
+
+    .planet-hud-footer {
+        font-size: 13px;
+    }
+}
+
+/* Landscape mode for mobile */
+@media (max-height: 600px) and (orientation: landscape) {
+    .planet-hud-container {
+        max-height: 95vh;
+        padding: 15px;
+    }
+
+    .planet-hud-title {
+        font-size: 24px;
+    }
+
+    .planet-hud-header {
+        margin-bottom: 15px;
+        padding-bottom: 10px;
+    }
+
+    .planet-hud-content {
+        gap: 20px;
+        margin-bottom: 15px;
+    }
+
+    .planet-hud-data-row {
+        padding: 6px 10px;
+    }
+
+    .planet-hud-label,
+    .planet-hud-value {
+        font-size: 14px;
+    }
+
+    .planet-hud-stats-title {
+        font-size: 20px;
+        margin-bottom: 10px;
+    }
+
+    .planet-hud-stat-item {
+        margin-bottom: 12px;
+    }
+
+    .planet-hud-habitable {
+        font-size: 20px;
+        padding: 10px;
+    }
+
+    .planet-hud-footer {
+        font-size: 14px;
+        padding-top: 10px;
+    }
+}
+
+/* ============================================
+   RESPONSIVE DESIGN - MOBILE OPTIMIZATIONS
+   ============================================ */
+
+/* Tablets and larger phones (landscape) */
+@media (max-width: 1024px) {
+
+    .cockpit-hud,
+    #controls-overlay,
+    #instructions {
+        max-width: 260px;
+        padding: 15px;
+        font-size: 11px;
+    }
+
+    #status-display {
+        font-size: 11px;
+        padding: 12px 15px;
+        min-width: 180px;
+    }
+}
+
+/* Tablets and phones (portrait) */
+@media (max-width: 768px) {
+
+    /* Hide cursor none on mobile */
+    body {
+        cursor: default;
+    }
+
+    #exoplanet-view canvas {
+        cursor: default;
+    }
+
+    /* HUD and Info panels */
+    .cockpit-hud,
+    #controls-overlay,
+    #instructions {
+        top: 10px;
+        left: 10px;
+        max-width: calc(100vw - 140px);
+        font-size: 10px;
+        padding: 12px;
+        border-radius: 8px;
+    }
+
+    .cockpit-hud h3,
+    .controls-header,
+    #instructions h3 {
+        font-size: 12px;
+        margin-bottom: 8px;
+    }
+
+    .cockpit-hud p {
+        font-size: 10px;
+    }
+
+    /* UI Container - Full width slide */
+    #uiContainer {
+        width: 100vw;
+        right: -100vw;
+        padding: 15px;
+        padding-top: 80px;
+    }
+
+    #uiContainer.active {
+        right: 0;
+    }
+
+    /* Toggle Button */
+    #settings-toggle {
+        right: 15px;
+        top: 15px;
+        width: 50px;
+        height: 50px;
+        font-size: 20px;
+    }
+
+    /* Section Headers */
+    .ui-section-header {
+        font-size: 16px;
+        margin: 20px 0 12px 0;
+    }
+
+    .ui-section-header:first-child {
+        margin-top: 20px;
+    }
+
+    /* Buttons */
+    .control-button,
+    #modeToggleButton,
+    #uploadButton,
+    button {
+        padding: 12px;
+        font-size: 12px;
+        margin: 8px 0;
+    }
+
+    /* Status Display */
+    #status-display {
+        top: 15px;
+        left: 75px;
+        bottom: auto;
+        right: auto;
+        padding: 10px 12px;
+        font-size: 10px;
+        min-width: 160px;
+        max-width: calc(100vw - 220px);
+    }
+
+    .status-header {
+        font-size: 12px;
+    }
+
+    /* Settings Panel */
+    .settings-panel {
+        right: 10px;
+        top: 75px;
+        padding: 15px;
+        min-width: 80px;
+        max-width: calc(100vw - 80px);
+    }
+
+    .settings-header {
+        font-size: 12px;
+    }
+
+    .setting-btn {
+        padding: 8px;
+        font-size: 11px;
+    }
+
+    /* Audio Indicator */
+    #audio-indicator {
+        bottom: 15px;
+        right: 15px;
+        padding: 6px 12px;
+        font-size: 10px;
+    }
+
+    /* Planet Info */
+    .planet-info-content h2,
+    .planet-header h2 {
+        font-size: 20px;
+    }
+
+    .planet-type {
+        font-size: 14px;
+    }
+
+    .planet-section h3 {
+        font-size: 14px;
+    }
+
+    .planet-section p {
+        font-size: 12px;
+    }
+
+    /* Control items */
+    kbd {
+        min-width: 50px;
+        font-size: 9px;
+        padding: 2px 4px;
+    }
+
+    .control-item {
+        font-size: 10px;
+    }
+
+    /* Crosshair - smaller on mobile */
+    .crosshair {
+        width: 30px;
+        height: 30px;
+    }
+}
+
+/* Small phones */
+@media (max-width: 480px) {
+
+    /* Compact HUD */
+    .cockpit-hud,
+    #controls-overlay,
+    #instructions {
+        max-width: calc(100vw - 120px);
+        font-size: 9px;
+        padding: 10px;
+        top: 8px;
+        left: 8px;
+    }
+
+    .cockpit-hud h3,
+    .controls-header,
+    #instructions h3 {
+        font-size: 11px;
+        margin-bottom: 6px;
+    }
+
+    /* Buttons */
+    #settings-toggle {
+        width: 45px;
+        height: 45px;
+        font-size: 18px;
+        right: 10px;
+        top: 10px;
+    }
+
+    /* UI Container */
+    #uiContainer {
+        padding: 12px;
+        padding-top: 70px;
+    }
+
+    .ui-section-header {
+        font-size: 14px;
+        margin: 15px 0 10px 0;
+    }
+
+    .control-button,
+    button {
+        padding: 10px;
+        font-size: 11px;
+    }
+
+    /* Status Display */
+    #status-display {
+        top: 8px;
+        left: 75px;
+        bottom: auto;
+        right: auto;
+        padding: 8px 10px;
+        font-size: 9px;
+        min-width: 140px;
+        max-width: calc(100vw - 120px);
+    }
+
+    .status-header {
+        font-size: 11px;
+        margin-bottom: 6px;
+    }
+
+    .status-line {
+        font-size: 9px;
+    }
+
+    /* Settings Panel */
+    .settings-panel {
+        right: 8px;
+        top: 65px;
+        padding: 12px;
+    }
+
+    .settings-header {
+        font-size: 11px;
+    }
+
+    .setting-btn {
+        padding: 7px;
+        font-size: 10px;
+    }
+
+    /* Planet Info */
+    .planet-info-content h2,
+    .planet-header h2 {
+        font-size: 18px;
+    }
+
+    .planet-type {
+        font-size: 13px;
+    }
+
+    .planet-section {
+        padding: 8px;
+        margin: 12px 0;
+    }
+
+    .planet-section h3 {
+        font-size: 13px;
+    }
+
+    .planet-section p {
+        font-size: 11px;
+    }
+
+    /* Control items */
+    kbd {
+        min-width: 45px;
+        font-size: 8px;
+    }
+
+    .control-item {
+        font-size: 9px;
+    }
+
+    /* Audio Indicator */
+    #audio-indicator {
+        bottom: 12px;
+        right: 12px;
+        padding: 5px 10px;
+        font-size: 9px;
+    }
+
+    /* Crosshair */
+    .crosshair {
+        width: 25px;
+        height: 25px;
+    }
+
+    .crosshair::before,
+    .crosshair::after {
+        box-shadow: 0 0 10px #00ffff;
+    }
+}
+
+/* Very small phones */
+@media (max-width: 360px) {
+
+    .cockpit-hud,
+    #controls-overlay,
+    #instructions {
+        max-width: calc(100vw - 100px);
+        font-size: 8px;
+        padding: 8px;
+    }
+
+    .cockpit-hud h3,
+    .controls-header,
+    #instructions h3 {
+        font-size: 10px;
+    }
+
+    #settings-toggle {
+        width: 40px;
+        height: 40px;
+        font-size: 16px;
+    }
+
+    #status-display {
+        font-size: 8px;
+        padding: 6px 8px;
+        min-width: 120px;
+    }
+
+    .status-header {
+        font-size: 10px;
+    }
+
+    .ui-section-header {
+        font-size: 13px;
+    }
+
+    .control-button,
+    button {
+        padding: 8px;
+        font-size: 10px;
+    }
+
+    .planet-info-content h2,
+    .planet-header h2 {
+        font-size: 16px;
+    }
+
+    .planet-section h3 {
+        font-size: 12px;
+    }
+
+    .planet-section p {
+        font-size: 10px;
+    }
+}
+
+/* Landscape mode for mobile devices */
+@media (max-height: 500px) and (orientation: landscape) {
+
+    .cockpit-hud,
+    #controls-overlay,
+    #instructions {
+        top: 5px;
+        left: 5px;
+        padding: 8px;
+        max-width: 200px;
+        font-size: 9px;
+    }
+
+    .cockpit-hud h3,
+    .controls-header {
+        font-size: 10px;
+        margin-bottom: 5px;
+    }
+
+    #settings-toggle {
+        top: 5px;
+        right: 5px;
+        width: 40px;
+        height: 40px;
+        font-size: 16px;
+    }
+
+    #status-display {
+        bottom: 5px;
+        left: 5px;
+        padding: 6px 8px;
+        font-size: 9px;
+    }
+
+    .settings-panel {
+        top: 50px;
+        right: 5px;
+        max-height: calc(100vh - 60px);
+        overflow-y: auto;
+    }
+
+    #uiContainer {
+        padding-top: 50px;
+    }
+
+    .ui-section-header:first-child {
+        margin-top: 10px;
+    }
+}
+
+/* Hide desktop-only elements on mobile */
+@media (max-width: 768px) {
+
+    /* Desktop cursor styles don't apply */
+    #exoplanet-view canvas:hover {
+        cursor: default;
+    }
+}
+
+/* Ensure mobile controls are hidden */
+@media (max-width: 768px) {
+
+    /* Hide the desktop help/controls overlay by default on mobile */
+    #controls-overlay {
+        display: none;
+    }
+
+    /* This class, added by JS, will make the help menu visible when toggled */
+    #controls-overlay.mobile-visible {
+        display: block;
+    }
+}

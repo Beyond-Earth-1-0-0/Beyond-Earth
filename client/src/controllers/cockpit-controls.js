@@ -1,6 +1,8 @@
 // src/controllers/cockpit-controls.js
 import * as THREE from "three";
 import { isHUDOpen } from "./exoplanet-ui-controller.js";
+
+let controlsEnabled = true;
 // Persistent velocity for smooth motion
 const velocity = new THREE.Vector3();
 
@@ -35,9 +37,18 @@ const up = new THREE.Vector3();
 // Mouse lock state
 let isPointerLocked = false;
 
-// Joystick state
-let moveJoystick = { active: false, x: 0, y: 0 };
-let lookJoystick = { active: false, x: 0, y: 0 };
+// Mobile joystick data (populated by mobile-controls.js events)
+let mobileMovement = { x: 0, y: 0 };
+// let mobileLook = { x: 0, y: 0 };
+
+let mobileButtons = {
+  forward: false,
+  backward: false,
+  left: false,
+  right: false,
+  rollLeft: false,
+  rollRight: false
+};
 
 // Device rotation (for mobile tilting)
 let tiltX = 0, tiltY = 0;
@@ -51,12 +62,11 @@ export function initControls(spaceshipRef, cameraRef) {
   spaceship = spaceshipRef;
   camera = cameraRef;
 
-  // Request pointer lock on canvas click
+  // Request pointer lock on canvas click (desktop only)
   const canvas = document.querySelector('canvas');
   if (canvas) {
-    canvas.addEventListener('contextmenu', (e) => e.preventDefault());
     canvas.addEventListener('click', () => {
-      if (!isHUDOpen()) {
+      if (!isHUDOpen() && !isMobileDevice()) {
         canvas.requestPointerLock();
       }
     });
@@ -90,7 +100,8 @@ export function initControls(spaceshipRef, cameraRef) {
     }
   });
 
-  initMobileControls();
+  // Listen to mobile control events from mobile-controls.js
+  setupMobileEventListeners();
 
   // Device tilt for rotation
   if (window.DeviceOrientationEvent) {
@@ -103,6 +114,50 @@ export function initControls(spaceshipRef, cameraRef) {
   console.log("Unified cockpit controls initialized");
 }
 
+/**
+ * Check if device is mobile
+ */
+function isMobileDevice() {
+  return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+    || (window.matchMedia && window.matchMedia("(pointer: coarse)").matches);
+}
+/**
+ * Setup listeners for mobile control events from mobile-controls.js
+ */
+function setupMobileEventListeners() {
+  window.addEventListener('chatFocusChange', (e) => {
+    const { isChatting } = e.detail;
+    controlsEnabled = !isChatting;
+    console.log(`Cockpit controls enabled: ${controlsEnabled}`);
+
+    // If controls are disabled, reset movement states to stop the ship
+    if (!controlsEnabled) {
+      Object.keys(keys).forEach(key => { keys[key] = false; });
+      Object.keys(mobileButtons).forEach(key => { mobileButtons[key] = false; });
+      mobileMovement = { x: 0, y: 0 };
+    }
+  });
+  console.log("Setting up mobile event listeners in cockpit-controls");
+
+  // Listen for movement joystick updates
+  window.addEventListener('mobileMovement', (e) => {
+    mobileMovement = e.detail;
+  });
+
+  // Listen for center view button
+  window.addEventListener('centerView', () => {
+    console.log("Center view event received");
+    centerView();
+  });
+  window.addEventListener('mobileButton', (e) => {
+    const { button, pressed } = e.detail;
+    if (mobileButtons.hasOwnProperty(button)) {
+      mobileButtons[button] = pressed;
+    }
+  });
+  console.log("Mobile event listeners attached");
+}
+
 function onPointerLockChange() {
   // Use document.pointerLockElement to check the current state
   if (document.pointerLockElement) {
@@ -110,7 +165,7 @@ function onPointerLockChange() {
     isPointerLocked = true;
   } else {
     console.log('Pointer has been unlocked.');
-    isPointerLocked = false; // This is the single source of truth!
+    isPointerLocked = false;
   }
 
   // Update UI to show control status
@@ -144,8 +199,9 @@ function onKeyDown(event) {
   if (key.includes('esc') && isPointerLocked) {
     document.exitPointerLock();
     isPointerLocked = false;
+    return;
   }
-
+  if (!controlsEnabled) return;
   // Enhanced keyboard shortcuts
   if (isPointerLocked) {
     switch (key) {
@@ -164,9 +220,9 @@ function onKeyUp(event) {
 }
 
 function onMouseMove(event) {
-  if (!camera || !isPointerLocked) return;
+  if (!camera || !isPointerLocked || !controlsEnabled) return;
 
-  const sensitivity = 0.0015; // Slightly reduced for better control
+  const sensitivity = 0.0015;
   const movementX = event.movementX || 0;
   const movementY = event.movementY || 0;
 
@@ -181,110 +237,6 @@ function onMouseMove(event) {
     -MAX_PITCH,
     MAX_PITCH
   );
-}
-
-/**
- * Setup right joystick (rotation control)
- */
-function setupLookJoystick(baseId, handleId) {
-  const base = document.getElementById(baseId);
-  const handle = document.getElementById(handleId);
-
-  if (!base || !handle) return;
-
-  let dragging = false;
-
-  base.addEventListener("touchstart", () => {
-    dragging = true;
-    lookJoystick.active = true;
-  });
-  base.addEventListener("touchend", () => {
-    dragging = false;
-    lookJoystick.active = false;
-    handle.style.transform = "translate(-50%, -50%)"; // reset to center
-    lookJoystick.x = 0;
-    lookJoystick.y = 0;
-  });
-
-  base.addEventListener("touchmove", (e) => {
-    if (!dragging) return;
-    e.preventDefault();
-
-    const touch = e.touches[0];
-    const rect = base.getBoundingClientRect();
-    const centerX = rect.left + rect.width / 2;
-    const centerY = rect.top + rect.height / 2;
-
-    const dx = (touch.clientX - centerX) / (rect.width / 2);
-    const dy = (touch.clientY - centerY) / (rect.height / 2);
-
-    // clamp
-    lookJoystick.x = THREE.MathUtils.clamp(dx, -1, 1);
-    lookJoystick.y = THREE.MathUtils.clamp(dy, -1, 1);
-
-    // apply transform
-    const maxOffset = rect.width / 2 - handle.offsetWidth / 2;
-    handle.style.transform = `translate(${lookJoystick.x * maxOffset}px, ${lookJoystick.y * maxOffset}px)`;
-  }, { passive: false });
-}
-
-/**
- * Mobile controls setup
- */
-function initMobileControls() {
-  const leftBase = document.getElementById('joystick-base');
-  const rightBase = document.getElementById('look-base');
-  const leftHandle = document.getElementById('joystick-handle');
-  const rightHandle = document.getElementById('look-handle');
-
-  if (!leftBase || !rightBase || !leftHandle || !rightHandle) return;
-
-  // Left joystick (movement)
-  leftBase.addEventListener('touchstart', e => {
-    moveJoystick.active = true;
-    handleTouch(e, moveJoystick, leftBase, leftHandle);
-  }, { passive: false });
-
-  leftBase.addEventListener('touchmove', e => {
-    handleTouch(e, moveJoystick, leftBase, leftHandle);
-  }, { passive: false });
-
-  leftBase.addEventListener('touchend', () => {
-    moveJoystick.active = false;
-  }, { passive: false });
-
-  // Right joystick (rotation)
-  setupLookJoystick('look-base', 'look-handle');
-}
-
-/**
- * Joystick movement calculation
- */
-function handleTouch(e, joystick, base, handle) {
-  e.preventDefault();
-  const touch = e.touches[0];
-  const rect = base.getBoundingClientRect();
-
-  const centerX = rect.left + rect.width / 2;
-  const centerY = rect.top + rect.height / 2;
-
-  let dx = touch.clientX - centerX;
-  let dy = touch.clientY - centerY;
-
-  let x = dx / (rect.width / 2);
-  let y = dy / (rect.height / 2);
-
-  joystick.x = THREE.MathUtils.clamp(x, -1, 1);
-  joystick.y = THREE.MathUtils.clamp(y, -1, 1);
-  updateHandlePosition(joystick, handle, rect);
-}
-
-/**
-* Update handle position while keeping it centered
-*/
-function updateHandlePosition(joystick, handle, rect) {
-  const maxOffset = rect.width / 2 - handle.offsetWidth / 2;
-  handle.style.transform = `translate(calc(${joystick.x * maxOffset}px - 50%), calc(${joystick.y * maxOffset}px - 50%))`;
 }
 
 function resetOrientation() {
@@ -306,6 +258,12 @@ function centerView() {
 export function updateControls(delta) {
   if (!spaceship || !camera) return;
 
+  if (!controlsEnabled) {
+    velocity.multiplyScalar(DAMPING);
+    spaceship.position.add(velocity);
+    return;
+  }
+
   // Smooth head movement inside cockpit with enhanced responsiveness
   yaw += (yawTarget - yaw) * SMOOTHING;
   pitch += (pitchTarget - pitch) * SMOOTHING;
@@ -320,11 +278,12 @@ export function updateControls(delta) {
   right.set(1, 0, 0).applyQuaternion(spaceship.quaternion).normalize();
   up.set(0, 1, 0).applyQuaternion(spaceship.quaternion).normalize();
 
-  // Enhanced WASD movement with acceleration
+  // Enhanced movement with acceleration
   const moveForce = MOVE_SPEED * delta;
   const currentSpeed = velocity.length();
-  const speedMultiplier = Math.min(1.0 + currentSpeed * 0.01, 2.0); // Progressive acceleration
+  const speedMultiplier = Math.min(1.0 + currentSpeed * 0.01, 2.0);
 
+  // Desktop keyboard controls
   if (keys["w"]) {
     velocity.addScaledVector(forward, moveForce * speedMultiplier);
   }
@@ -336,6 +295,13 @@ export function updateControls(delta) {
   }
   if (keys["d"]) {
     velocity.addScaledVector(right, moveForce * speedMultiplier);
+  }
+
+  // Mobile joystick movement controls
+  if (isMobileDevice() && (mobileMovement.x !== 0 || mobileMovement.y !== 0)) {
+    const mobileForce = moveForce * 1.5; // Slightly stronger for mobile
+    velocity.addScaledVector(forward, mobileMovement.y * mobileForce * speedMultiplier);
+    velocity.addScaledVector(right, mobileMovement.x * mobileForce * speedMultiplier);
   }
 
   // Enhanced vertical movement
@@ -374,7 +340,11 @@ export function updateControls(delta) {
   spaceship.position.add(velocity);
 
   // Enhanced damping based on movement state
-  const activeDamping = (keys["w"] || keys["a"] || keys["s"] || keys["d"] || keys[" "] || keys["shift"])
+  const isMoving = keys["w"] || keys["a"] || keys["s"] || keys["d"] ||
+    keys[" "] || keys["shift"] ||
+    (mobileMovement.x !== 0 || mobileMovement.y !== 0);
+
+  const activeDamping = isMoving
     ? DAMPING * 1.02 // Less damping when actively moving
     : DAMPING * 0.98; // More damping when coasting
 
@@ -390,28 +360,28 @@ export function updateControls(delta) {
     );
     camera.position.add(shake);
   }
-  updateJoystickHandles();
-}
-
-function updateJoystickHandles() {
-  const leftBase = document.getElementById('joystick-base');
-  const rightBase = document.getElementById('look-base');
-  const leftHandle = document.getElementById('joystick-handle');
-  const rightHandle = document.getElementById('look-handle');
-
-  if (!leftBase || !rightBase || !leftHandle || !rightHandle) return;
-
-  if (!moveJoystick.active) {
-    moveJoystick.x = THREE.MathUtils.lerp(moveJoystick.x, 0, 0.2);
-    moveJoystick.y = THREE.MathUtils.lerp(moveJoystick.y, 0, 0.2);
+  // For mobile devices - button controls
+  if (isMobileDevice()) {
+    if (mobileButtons.forward) {
+      spaceship.rotateX(rotationForce);
+    }
+    if (mobileButtons.backward) {
+      spaceship.rotateX(-rotationForce);
+    }
+    if (mobileButtons.left) {
+      spaceship.rotateY(rotationForce);
+    }
+    if (mobileButtons.right) {
+      spaceship.rotateY(-rotationForce);
+    }
+    if (mobileButtons.rollLeft) {
+      spaceship.rotateZ(rotationForce);
+    }
+    if (mobileButtons.rollRight) {
+      spaceship.rotateZ(-rotationForce);
+    }
   }
 
-  if (!lookJoystick.active) {
-    lookJoystick.x = THREE.MathUtils.lerp(lookJoystick.x, 0, 0.2);
-    lookJoystick.y = THREE.MathUtils.lerp(lookJoystick.y, 0, 0.2);
-  }
-  updateHandlePosition(moveJoystick, leftHandle, leftBase.getBoundingClientRect());
-  updateHandlePosition(lookJoystick, rightHandle, rightBase.getBoundingClientRect());
 }
 
 /**
@@ -434,11 +404,15 @@ export function setVelocity(newVelocity) {
 export function getControlInfo() {
   return {
     isPointerLocked,
+    isMobile: isMobileDevice(),
     speed: velocity.length(),
     position: spaceship ? spaceship.position.clone() : new THREE.Vector3(),
     rotation: {
       yaw: yaw * THREE.MathUtils.RAD2DEG,
       pitch: pitch * THREE.MathUtils.RAD2DEG
+    },
+    mobileInput: {
+      movement: mobileMovement,
     }
   };
 }

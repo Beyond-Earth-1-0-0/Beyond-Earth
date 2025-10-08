@@ -4,7 +4,7 @@ RUN rm -rf /usr/share/nginx/html/*
 
 COPY ./pages/index.html /usr/share/nginx/html/index.html
 COPY ./pages/data-viewer.html /usr/share/nginx/html/data-viewer.html
-COPY ./pages/exo.html /usr/share/nginx/html/exo.html
+COPY ./pages/exo-space.html /usr/share/nginx/html/exo-space.html
 
 COPY ./src /usr/share/nginx/html/src
 COPY ./assets /usr/share/nginx/html/assets

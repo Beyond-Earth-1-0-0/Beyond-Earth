@@ -4,6 +4,7 @@ import { landOnPlanet } from "../utilities/spaceship-physics-utils.js";
 import { show3DPlanetInfo } from "./exoplanet-ui-controller.js";
 import { loadDefaultData } from "../data management/planet-data-provider.js";
 import { createRealisticPlanetTexture } from "./texture-generator.js"
+let controlsEnabled = true;
 // Config
 const MIN_PLANET_RADIUS = 2;
 const MAX_PLANET_RADIUS = 12;
@@ -242,6 +243,11 @@ function enablePlanetInteractions(planets, camera, spaceship, planetTutor) {
   let hoveredPlanet = null;
 
   raycaster.far = 1000;
+  window.addEventListener('chatFocusChange', (e) => {
+    const { isChatting } = e.detail;
+    controlsEnabled = !isChatting;
+    console.log(`Planet interactions enabled: ${controlsEnabled}`);
+  });
 
   // Mouse move for hover effects
   document.addEventListener("mousemove", (event) => {
@@ -273,35 +279,37 @@ function enablePlanetInteractions(planets, camera, spaceship, planetTutor) {
 
   // Click interactions
   document.addEventListener("click", (event) => {
-    if (!document.pointerLockElement) return;
+    if (!controlsEnabled) return;
+    if (document.pointerLockElement) {
+      mouse.x = 0;
+      mouse.y = 0;
 
-    mouse.x = 0;
-    mouse.y = 0;
+      raycaster.setFromCamera(mouse, camera);
+      const intersects = raycaster.intersectObjects(planets);
 
-    raycaster.setFromCamera(mouse, camera);
-    const intersects = raycaster.intersectObjects(planets);
+      if (intersects.length === 0) {
+        // Forward ray casting
+        raycaster.set(
+          camera.getWorldPosition(new THREE.Vector3()),
+          camera.getWorldDirection(new THREE.Vector3())
+        );
 
-    if (intersects.length === 0) {
-      // Forward ray casting
-      raycaster.set(
-        camera.getWorldPosition(new THREE.Vector3()),
-        camera.getWorldDirection(new THREE.Vector3())
-      );
+        const forwardIntersects = raycaster.intersectObjects(planets);
+        if (forwardIntersects.length === 0) return;
 
-      const forwardIntersects = raycaster.intersectObjects(planets);
-      if (forwardIntersects.length === 0) return;
+        const targetPlanet = forwardIntersects[0].object;
+        handlePlanetInteraction(targetPlanet, spaceship, planetTutor);
+        return;
+      }
 
-      const targetPlanet = forwardIntersects[0].object;
-      handlePlanetInteraction(targetPlanet, spaceship, planetTutor);
-      return;
+      const clickedPlanet = intersects[0].object;
+      handlePlanetInteraction(clickedPlanet, spaceship, planetTutor);
     }
-
-    const clickedPlanet = intersects[0].object;
-    handlePlanetInteraction(clickedPlanet, spaceship, planetTutor);
   });
 
   // Keyboard shortcuts
   document.addEventListener("keydown", (event) => {
+    if (!controlsEnabled) return;
     if (event.key.toLowerCase() === 't') {
       const nearestPlanet = findNearestPlanet(planets, spaceship.position);
       if (nearestPlanet) {
@@ -317,19 +325,29 @@ function enablePlanetInteractions(planets, camera, spaceship, planetTutor) {
       }
     }
   });
-  // Mobile Shortcuts
-  document.getElementById("toggle-info").addEventListener("click", () => {
-    const nearestPlanet = findNearestPlanet(planets, spaceship.position);
-    if (nearestPlanet) {
-      playFuturisticScanSound();
-      show3DPlanetInfo(nearestPlanet);
-    }
-  });
+  // Mobile shortcuts
+  const infoBtn = document.getElementById('toggle-info');
+  if (infoBtn) {
+    infoBtn.addEventListener('click', () => {
+      if (!controlsEnabled) return;
+      console.log("Info button clicked");
+      const nearestPlanet = findNearestPlanet(planets, spaceship.position);
+      if (nearestPlanet) {
+        playFuturisticScanSound();
+        show3DPlanetInfo(nearestPlanet);
+      }
+    });
+  }
 
-  document.getElementById("toggle-targets").addEventListener("click", () => {
-    const nearestPlanet = findNearestPlanet(planets, spaceship.position);
-    if (nearestPlanet) handlePlanetInteraction(nearestPlanet, spaceship, planetTutor);
-  });
+  const targetBtn = document.getElementById('target-btn');
+  if (targetBtn) {
+    targetBtn.addEventListener('click', () => {
+      if (!controlsEnabled) return;
+      console.log("Target button clicked");
+      const nearestPlanet = findNearestPlanet(planets, spaceship.position);
+      if (nearestPlanet) handlePlanetInteraction(nearestPlanet, spaceship, planetTutor);
+    });
+  }
 }
 
 function handlePlanetInteraction(planet, spaceship, planetTutor) {
