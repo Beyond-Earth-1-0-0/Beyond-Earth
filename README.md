@@ -1,10 +1,10 @@
-# Beyond Earth - Cosmic Journey
+# 🌌 Beyond Earth - Cosmic Journey
 
 > An immersive 3D web experience that takes users on a journey from the edge of the cosmos, through atmospheric reentry, to exploring realistic exoplanets in a virtual cockpit.
 
 ---
 
-## Features
+## ✨ Features
 
 ### Main Journey (Cosmic Gateway)
 
@@ -29,7 +29,7 @@
 
 ---
 
-### Exoplanet Exploration
+### 🪐 Exoplanet Exploration
 
 #### Cockpit Experience
 - **Immersive first-person cockpit view** with realistic interior
@@ -121,7 +121,7 @@
 
 ---
 
-## Data Viewer and Management
+## 📊 Data Viewer and Management
 
 ### Scientist Mode
 
@@ -155,7 +155,7 @@
 
 ---
 
-## Authentication and Security
+## 🔐 Authentication and Security
 
 ### OTP-Based Authentication
 
@@ -178,7 +178,7 @@
 
 ---
 
-## Technical Features
+## ⚙️ Technical Features
 
 - **Three.js-powered 3D graphics** with advanced lighting and PBR materials
 - **Procedural starfields** and instanced rendering for performance
@@ -190,7 +190,7 @@
 
 ---
 
-## Getting Started
+## 🚀 Getting Started
 
 ### Prerequisites
 
@@ -211,7 +211,7 @@ Visit **http://localhost:5500**
 
 ---
 
-## Controls
+## 🎮 Controls
 
 ### Cosmic Journey
 
@@ -236,7 +236,7 @@ Visit **http://localhost:5500**
 
 ---
 
-## Technical Architecture
+## 🏗️ Technical Architecture
 
 **Scene Controllers**: 
 - `CosmicScene.js`, `EarthSystem.js`, `DesertSceneController.js`, `CameraController.js`
@@ -252,14 +252,14 @@ Visit **http://localhost:5500**
 
 ---
 
-## Browser Support
+## 🌐 Browser Support
 
 - **Chrome, Edge, Firefox, Safari** _(with audio gesture)_
 - **Mobile-friendly** _(touch adapted)_
 
 ---
 
-## Troubleshooting
+## 🔧 Troubleshooting
 
 | Issue | Solution |
 |-------|----------|
@@ -269,18 +269,72 @@ Visit **http://localhost:5500**
 
 ---
 
-## Future Enhancements
+## 🔮 Future Enhancements
 
 - VR support
 - Multiplayer journeys
 - Procedural planet surfaces
 - Real-time exoplanet data integration
 - Advanced atmospheric scattering
-- Optimized touch controls
 
 ---
 
-## Credits
+## 👥 Contributors
+
+Thanks to these amazing people who have contributed to Beyond Earth:
+
+<table>
+  <tr>
+    <td align="center">
+      <a href="https://github.com/AhmedEssamYassin">
+        <img src="https://github.com/AhmedEssamYassin.png" width="100px;" alt="Contributor 1"/>
+        <br />
+        <sub><b>@AhmedEssamYassin</b></sub>
+      </a>
+    </td>
+    <td align="center">
+      <a href="https://github.com/E-emanAshraf">
+        <img src="https://github.com/E-emanAshraf.png" width="100px;" alt="Contributor 2"/>
+        <br />
+        <sub><b>@E-emanAshraf</b></sub>
+      </a>
+    </td>
+    <td align="center">
+      <a href="https://github.com/Esraa-Hassan0">
+        <img src="https://github.com/Esraa-Hassan0.png" width="100px;" alt="Contributor 3"/>
+        <br />
+        <sub><b>@Esraa-Hassan0</b></sub>
+      </a>
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
+      <a href="https://github.com/JMeriden">
+        <img src="https://github.com/JMeriden.png" width="100px;" alt="Contributor 4"/>
+        <br />
+        <sub><b>@JMeriden</b></sub>
+      </a>
+    </td>
+    <td align="center">
+      <a href="https://github.com/MoaazEmam">
+        <img src="https://github.com/MoaazEmam.png" width="100px;" alt="Contributor 5"/>
+        <br />
+        <sub><b>@MoaazEmam</b></sub>
+      </a>
+    </td>
+    <td align="center">
+      <a href="https://github.com/Ra7eeq1912005">
+        <img src="https://github.com/Ra7eeq1912005.png" width="100px;" alt="Contributor 6"/>
+        <br />
+        <sub><b>@Ra7eeq1912005</b></sub>
+      </a>
+    </td>
+  </tr>
+</table>
+
+---
+
+## 📜 Credits
 
 - **Three.js** - rendering
 - **NASA Exoplanet Archive** - scientific data
@@ -289,10 +343,10 @@ Visit **http://localhost:5500**
 
 ---
 
-## License
+## 📄 License
 
 Open-source under **MIT License**.
 
 ---
 
-> **Experience the cosmos. Explore distant worlds. Journey Beyond Earth.**
+> **Experience the cosmos. Explore distant worlds. Journey Beyond Earth.** ✨
