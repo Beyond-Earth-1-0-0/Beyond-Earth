@@ -145,6 +145,31 @@ export class DesertSceneController {
       this.spaceship.rotation.y = Math.PI * 0.25; // Angle it towards camera
       this.spaceship.rotation.x = 0; // Ensure it's level with ground
 
+      // Fix materials to be opaque and sharp
+      this.spaceship.traverse((child) => {
+        if (child.isMesh) {
+          // Make materials fully opaque
+          child.material.transparent = false;
+          child.material.opacity = 1.0;
+          child.material.depthWrite = true;
+          child.material.depthTest = true;
+
+          // Enhance color and reduce roughness for sharper look
+          if (child.material.color) {
+            child.material.color.multiplyScalar(1.2); // Boost color intensity
+          }
+          child.material.roughness = Math.max(0.3, child.material.roughness || 0.5);
+          child.material.metalness = Math.min(0.8, child.material.metalness || 0.5);
+
+          // Enable shadows for better definition
+          child.castShadow = true;
+          child.receiveShadow = true;
+
+          // Force material update
+          child.material.needsUpdate = true;
+        }
+      });
+
       // Add some ambient glow to make it more noticeable
       const spaceshipLight = new THREE.PointLight(0x00aaff, 1.2, 100);
       spaceshipLight.position.copy(this.spaceship.position);
