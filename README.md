@@ -1,6 +1,16 @@
 # 🌌 Beyond Earth - Cosmic Journey
 
-> An immersive 3D web experience that takes users on a journey from the edge of the cosmos, through atmospheric reentry, to exploring realistic exoplanets in a virtual cockpit.
+> An immersive 3D web experience that takes users on a journey from the edge of the cosmos, through atmospheric reentry, to exploring realistic exoplanets in a virtual cockpit — featuring dynamic graphs, interactive charts, and advanced filtering and sorting tools for rich data exploration.
+
+---
+## Proposal Video
+[![Watch our proposal](https://img.shields.io/badge/Watch-Video-red?style=for-the-badge&logo=youtube)](https://drive.google.com/file/d/1LIC80IXYDQqCUnr84aipV9sjZRN0T7xj/view)
+
+---
+
+## Proposal Document
+[![View Document](https://img.shields.io/badge/View-Document-blue?style=for-the-badge&logo=google-drive)](https://docs.google.com/document/d/1cv9UWkXiJdNaN8Ost-Y355kUm7slKhp7/view)
+
 
 ---
 
