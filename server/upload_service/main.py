@@ -59,7 +59,7 @@ def cleanup_otps() -> dict:
 # ======== EMAIL VALIDATION ========
 def validate_email(email: str) -> bool:
     # pattern = r"^[0-9]{10}@cis\.asu\.edu\.eg$"
-    pattern = r"^[a-zA-Z]+(?:\.[a-zA-Z]+)?\d{2}@eng-st\.cu\.edu\.eg$"
+    pattern = r"^[a-zA-Z]+(?:\.[a-zA-Z]+)?\d+@eng-st\.cu\.edu\.eg$"
     return re.match(pattern, email) is not None
 
 # ======== GENERATE OTP ========
@@ -107,7 +107,7 @@ def send_otp_endpoint(email: str = Form(...)):
     sender_password = "ybkn qrcj zjgn svcf"  # Replace with your Gmail App Password
     
     if not validate_email(email):
-        return {"success": False, "message": "Invalid email format. Must be: 10digits@cis.asu.edu.eg"}
+        return {"success": False, "message": "Invalid email format. Must be: fname.lname(digits)@eng-st.cu.edu.eg"}
 
     otp, _ = generate_unique_otp(email)
     try:
