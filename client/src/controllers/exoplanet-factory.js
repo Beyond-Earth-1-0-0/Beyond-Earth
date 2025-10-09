@@ -325,6 +325,61 @@ function enablePlanetInteractions(planets, camera, spaceship, planetTutor) {
       }
     }
   });
+
+  // Add this function after the keyboard shortcuts section in enablePlanetInteractions
+  // Mobile touch interactions
+  let touchStartTime = 0;
+  let touchStartPos = { x: 0, y: 0 };
+
+  document.addEventListener("touchstart", (event) => {
+    if (!controlsEnabled) return;
+    touchStartTime = Date.now();
+    touchStartPos.x = event.touches[0].clientX;
+    touchStartPos.y = event.touches[0].clientY;
+  }, { passive: true });
+
+  document.addEventListener("touchend", (event) => {
+    if (!controlsEnabled) return;
+
+    const touchDuration = Date.now() - touchStartTime;
+    const touchEndPos = {
+      x: event.changedTouches[0].clientX,
+      y: event.changedTouches[0].clientY
+    };
+
+    // Check if it's a tap (short duration and minimal movement)
+    const distance = Math.sqrt(
+      Math.pow(touchEndPos.x - touchStartPos.x, 2) +
+      Math.pow(touchEndPos.y - touchStartPos.y, 2)
+    );
+
+    if (touchDuration < 300 && distance < 10) {
+      // Convert touch position to normalized device coordinates
+      mouse.x = (touchEndPos.x / window.innerWidth) * 2 - 1;
+      mouse.y = -(touchEndPos.y / window.innerHeight) * 2 + 1;
+
+      raycaster.setFromCamera(mouse, camera);
+      const intersects = raycaster.intersectObjects(planets);
+
+      if (intersects.length > 0) {
+        const touchedPlanet = intersects[0].object;
+        handlePlanetInteraction(touchedPlanet, spaceship, planetTutor);
+      } else {
+        // Try forward ray casting from camera center
+        raycaster.set(
+          camera.getWorldPosition(new THREE.Vector3()),
+          camera.getWorldDirection(new THREE.Vector3())
+        );
+
+        const forwardIntersects = raycaster.intersectObjects(planets);
+        if (forwardIntersects.length > 0) {
+          const targetPlanet = forwardIntersects[0].object;
+          handlePlanetInteraction(targetPlanet, spaceship, planetTutor);
+        }
+      }
+    }
+  }, { passive: true });
+
   // Mobile shortcuts
   const infoBtn = document.getElementById('toggle-info');
   if (infoBtn) {
