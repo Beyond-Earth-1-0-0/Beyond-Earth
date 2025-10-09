@@ -9,6 +9,15 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 import sys
 
+
+#for fixing upload, should remove after 
+import logging, traceback
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s [%(levelname)s] %(message)s"
+)
+
 # Add the project's root directory to the Python path
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
 
@@ -16,7 +25,6 @@ from server.models.notebook.KOI import train_and_save_model
 
 app = FastAPI()
 # Mount the uploading folder as static
-app.mount("/client", StaticFiles(directory="../../client"), name="client")
 
 # ======== CORS ========
 app.add_middleware(
@@ -126,16 +134,16 @@ def verify_otp_endpoint(otp: str = Form(...), email: str = Form(...)):
 # =============================
 # ========== PREDICT PART =====
 # =============================
-ORIGINAL_DATASET_PATH = "../models/notebook/original_dataset.csv"
-MERGE_FOLDER = "../models/merged_datasets"
-PREDICTION_FOLDER = "../models/prediction_inputs"
+ORIGINAL_DATASET_PATH = "server/models/notebook/original_dataset.csv"
+MERGE_FOLDER = "server/models/merged_datasets"
+PREDICTION_FOLDER = "server/models/prediction_inputs"
 RESULTS_FILE = f"{PREDICTION_FOLDER}/predictions_with_ids.csv"
 
 
-MODEL_PATH = "../models/saved_model/best_model.pkl"
-IMPUTER_PATH = "../models/saved_model/imputer.pkl"
-SCALER_PATH = "../models/saved_model/scaler.pkl"
-SELECTOR_PATH = "../models/saved_model/selector.pkl"
+MODEL_PATH = "server/models/saved_model/best_model.pkl"
+IMPUTER_PATH = "server/models/saved_model/imputer.pkl"
+SCALER_PATH = "server/models/saved_model/scaler.pkl"
+SELECTOR_PATH = "server/models/saved_model/selector.pkl"
 
 os.makedirs(MERGE_FOLDER, exist_ok=True)
 os.makedirs(PREDICTION_FOLDER, exist_ok=True)
