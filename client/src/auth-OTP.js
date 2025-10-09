@@ -1,5 +1,6 @@
 import * as THREE from "three";
 import { StarField } from './utilities/star-field.js';
+import {backendUrl} from '/config.js'
 
 class AuthOTPApp {
     constructor() {
@@ -7,7 +8,7 @@ class AuthOTPApp {
         this.camera = null;
         this.renderer = null;
         this.starField = null;
-        this.apiBase = "https://beyond-earth-backend.calmplant-c87294f1.uaenorth.azurecontainerapps.io";
+        this.apiBase = backendUrl;
         // this.apiBase = "http://127.0.0.1:5500";
     }
 

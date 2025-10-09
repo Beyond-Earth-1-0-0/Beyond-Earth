@@ -1,5 +1,6 @@
 import * as THREE from "three";
 import { StarField } from "./utilities/star-field.js";
+import {backendUrl} from '/config.js'
 
 // Three.js Scene Setup
 let scene, camera, renderer, starField;
@@ -164,7 +165,7 @@ document.getElementById("uploadForm").addEventListener("submit", async (e) => {
 		submitBtn.disabled = true;
 		showModal();
 
-		const res = await fetch("/upload", {
+		const res = await fetch(`${backendUrl}/upload`, {
 			method: "POST",
 			body: formData,
 		});

@@ -12,5 +12,9 @@ COPY ./css /usr/share/nginx/html/css
 COPY ./pages /usr/share/nginx/html/pages
 COPY ./assets/favicon.ico /usr/share/nginx/html/favicon.ico
 
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
 EXPOSE 80
-CMD ["nginx", "-g", "daemon off;"]
+
+ENTRYPOINT ["/entrypoint.sh"]
